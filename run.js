@@ -1,7 +1,6 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = require("./config.js");
-const commands = require("./command.js");
 const argParse = require("./arguments.js");
 const argFormat = require("./format.js");
 
@@ -24,7 +23,7 @@ client.on('message', async msg => {
 		args: processCommand.join(" ").trim(),
 		parsed: argParse(processCommand.join(" "))
 	};
-	switch(commands[cmd.command]) {
+	switch(cmd.command) {
 		case "greet":
 			msg.author.send("Have a SPOOKY Halloween");
 		break;
