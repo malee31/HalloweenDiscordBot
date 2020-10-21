@@ -10,10 +10,16 @@ client.on('message', async msg => {
 
 	let cmd = cmdParse(msg.content);
 	let senderData = badDatabase.get(msg.author.id);
+	let time = Math.floor(new Date().getTime() / 1000);
 
 	switch(cmd.command) {
 
 		case "allowance":
+			if(time - senderData.cooldowns.allowance < config.cooldowns.allowance) {
+				msg.channel.send(`If you ask for too much money, your mom will get mad!\nCooldown: ${config.cooldowns.allowance - (time - senderData.cooldowns.allowance)}`);
+				return;
+			}
+			senderData.cooldowns.allowance = time;
 			let allowance = Math.floor(Math.random() * 1000);
 			senderData.balance += allowance;
 			msg.channel.send(`Your mom gave you an allowance\nYou bought ${allowance} candies with it`);

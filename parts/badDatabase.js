@@ -17,13 +17,12 @@ module.exports = {
 
 function save() {
 	let saveThis = JSON.stringify(data);
-	console.log(saveThis);
 	fs.writeFile(`${__dirname}/../private/badSaveData.json`, saveThis, (err) => {
 		if(err) {
 			console.log(`ERROR! ${err}`);
 			console.log(`Data Dump: ${JSON.stringify(data)}`);
 		}
-		console.log('Data written to file');
+		//console.log('Data written to file');
 	});
 }
 
