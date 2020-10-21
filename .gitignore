@@ -1,5 +1,6 @@
 # Testing Files and Credentials
 private/
+.env
 
 # Node Files
 node_modules/
