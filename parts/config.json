@@ -4,13 +4,13 @@
 		"balance": 0,
 		"trick": 0,
 		"cooldowns": {
-			"allowance": 0,
+			"candy": 0,
 			"boo": 0
 		}
 	},
 	"candyMultiplier": 2,
 	"cooldowns": {
-		"allowance": 82800,
+		"candy": 82800,
 		"boo": 10
 	},
 	"prefix": "-",
