@@ -22,15 +22,15 @@ client.on('message', async msg => {
 		break;
 
 		case "pass":
-			remainingCooldown = cooldown("candy", senderData);
+			remainingCooldown = cooldown("pass", senderData);
 			if(remainingCooldown !== -1) {
 				msg.channel.send(`If you take all the candy, your mom will get mad!\nCooldown: ${remainingCooldown}s left`);
 				return;
 			}
 
-			let candy = Math.floor(Math.random() * 35) + 25;
-			senderData.balance += candy;
-			msg.channel.send(`Your mom gave out candy and had ${candy} candies left over for you\nHere, you can take it!`);
+			let pass = Math.floor(Math.random() * 31) + 25;
+			senderData.balance += pass;
+			msg.channel.send(`Your mom gave out candy and had ${pass} candies left over for you\nHere, you can take it!`);
 		break;
 
 		case "boo":
