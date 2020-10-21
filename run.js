@@ -76,10 +76,7 @@ client.on('message', async msg => {
 
 		case "react":
 			msg.channel.send("QUICK! PICK UP THE CANDY!!!").then(sentMsg => {
-				const filter = (reaction, user) => {
-					return ["🍬", "🍫", "🍭", "🍪"].includes(reaction.emoji.name);
-				};
-				startEvent({type: "react", startTime: time, id: sentMsg.id});
+				startEvent({type: "react", startTime: time, id: sentMsg.id, data: ["🍬", "🍫", "🍭", "🍪"]});
 				sentMsg.react("🍬");
 				sentMsg.react("🍫");
 				sentMsg.react("🍭");
@@ -100,15 +97,18 @@ client.on('message', async msg => {
 });
 
 client.on('messageReactionAdd', (reaction, user) => {
-	console.log(`${user.username} reacted with "${reaction.emoji.name}".`);
-	console.log(reaction.message.id);
+	//console.log(`${user.username} reacted with "${reaction.emoji.name}".`);
 	eventClear();
-	console.log(typeof currentEvents);
+	if(user.bot) return;
 	let eventLookup = currentEvents.find(events => events.id == reaction.message.id);
 	if(typeof eventLookup == "undefined") return;
 	switch(eventLookup.type) {
 		case "react":
+			let index = eventLookup.data.indexOf(reaction.emoji.name);
+			if(index == -1) return;
+			eventLookup.data.splice(index, 1);
 			badDatabase.get(user.id).balance += 10;
+			reaction.message.edit(`${reaction.message.content}\n${user.username}#${user.discriminator} got 10 ${reaction.emoji.name}`);
 		break;
 	}
 });
