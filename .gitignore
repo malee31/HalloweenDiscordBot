@@ -1,6 +1,6 @@
 # Testing Files and Credentials
-private/
 .env
+saveData.json
 
 # Node Files
 node_modules/
