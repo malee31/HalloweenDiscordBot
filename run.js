@@ -6,6 +6,8 @@ const argFormat = require("./parts/format.js");
 const badDatabase = require("./parts/badDatabase.js");
 
 let time = Math.floor(new Date().getTime() / 1000);
+let currentEvents = [];
+let eventTimer = -1;
 
 client.on('message', async msg => {
 	if(msg.author.bot || !msg.content.startsWith(config.prefix)) return;
@@ -72,6 +74,19 @@ client.on('message', async msg => {
 			msg.channel.send("I'm still alive. \nBut you won't be for long.");
 		break;
 
+		case "react":
+			msg.channel.send("QUICK! PICK UP THE CANDY!!!").then(sentMsg => {
+				const filter = (reaction, user) => {
+					return ["🍬", "🍫", "🍭", "🍪"].includes(reaction.emoji.name);
+				};
+				startEvent({type: "react", startTime: time, id: sentMsg.id});
+				sentMsg.react("🍬");
+				sentMsg.react("🍫");
+				sentMsg.react("🍭");
+				sentMsg.react("🍪");
+			}).catch(console.error);
+		break;
+
 		case "knock":
 			if(/^<@!\d+>$/.test(cmd.parsed[0])) {
 				let userToTrick = cmd.parsed[0].match(/(?<=^<@!)\d+(?=>$)/)[0];
@@ -84,6 +99,24 @@ client.on('message', async msg => {
 	}
 });
 
+client.on('messageReactionAdd', (reaction, user) => {
+	console.log(`${user.username} reacted with "${reaction.emoji.name}".`);
+	console.log(reaction.message.id);
+	eventClear();
+	console.log(typeof currentEvents);
+	let eventLookup = currentEvents.find(events => events.id == reaction.message.id);
+	if(typeof eventLookup == "undefined") return;
+	switch(eventLookup.type) {
+		case "react":
+			badDatabase.get(user.id).balance += 10;
+		break;
+	}
+});
+
+client.on('messageReactionRemove', (reaction, user) => {
+	console.log(`${user.username} removed their "${reaction.emoji.name}" reaction.`);
+});
+
 function cooldown(cooldownName, senderData) {
 	if(time - senderData.cooldowns[cooldownName] < config.cooldowns[cooldownName]) {
 		return config.cooldowns[cooldownName] - (time - senderData.cooldowns[cooldownName]);
@@ -91,4 +124,25 @@ function cooldown(cooldownName, senderData) {
 
 	senderData.cooldowns[cooldownName] = time;
 	return -1;
+}
+
+function startEvent(eventObject) {
+	currentEvents.push(eventObject);
+	if(eventTimer !== -1) eventTimer = setInterval(eventClear, config.eventTimerSpeed);
+}
+
+function eventClear(id) {
+	time = Math.floor(new Date().getTime() / 1000);
+	for(let eventNum = 0; eventNum < currentEvents.length; eventNum++) {
+		let thisEvent = currentEvents[eventNum];
+		if(time >= thisEvent.start + config.eventDurations[thisEvent.type] || (typeof id !== "undefined" && thisEvent.id == id)) {
+			currentEvents.splice(eventNum, 1);
+			eventExpire(thisEvent);
+			eventNum--;
+		}
+	}
+}
+
+function eventExpire(expiredEvent) {
+	console.log(`Expired event ${expiredEvent.type}`);
 }

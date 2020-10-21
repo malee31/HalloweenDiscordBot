@@ -13,6 +13,10 @@
 		"pass": 82800,
 		"boo": 420
 	},
+	"eventDurations": {
+		"react": 10
+	},
+	"eventTimerSpeed": 1000,
 	"prefix": "-",
 	"substitutionPlaceholder": "substitutionplaceholder",
 	"aliases": {
