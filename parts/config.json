@@ -16,5 +16,8 @@
 	"prefix": "-",
 	"substitutionPlaceholder": "substitutionplaceholder",
 	"aliases": {
+		"scare": "boo",
+		"lead": "leaderboard",
+		"top": "leaderboard"
 	}
 }

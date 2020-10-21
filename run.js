@@ -49,6 +49,21 @@ client.on('message', async msg => {
 			}
 		break;
 
+		case "leaderboard":
+			let allUsers = badDatabase.get();
+			let topMsg = "Top Trick O' Treaters\n"
+			let lead = msg.guild.members.cache.filter(member => {
+				return typeof allUsers[member.user.id] !== "undefined";
+			}).sort((a, b) => {
+				return allUsers[b.user.id].balance - allUsers[a.user.id].balance;
+			}).forEach(member => {
+				if(allUsers[member.user.id].balance == 0) return;
+				topMsg += `${allUsers[member.user.id].balance} Candies - ${member.user.username}#${member.user.discriminator}\n`;
+			});
+
+			msg.channel.send(topMsg);
+		break;
+
 		case "profile":
 			msg.channel.send(`You have ${senderData.balance} candies in your Trick O' Treat bag`);
 		break;

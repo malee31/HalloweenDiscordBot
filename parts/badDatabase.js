@@ -27,7 +27,7 @@ function save() {
 }
 
 function get(userID) {
-	if(typeof userID !== "string" && typeof userID !== "number") {
+	if(typeof userID !== "string" && typeof userID !== "number" && typeof userID !== "undefined") {
 		console.log("UserID isn't a string or number... HOW?");
 		return;
 	}
