@@ -1,8 +1,23 @@
-const config = require("./config.js");
+const config = require("./config.json");
 
-module.exports = function parseArguments(joinedArgs) {
-	if(typeof joinedArgs !== "string" || joinedArgs.trim().length == 0) return [];
-	joinedArgs = joinedArgs.trim();
+module.exports = commandInput => {
+	let content = commandInput.slice(config.prefix.length).trim();
+
+	let splitCmd = content.split(/ |\n+/g);
+
+	let cmd = {
+		command: splitCmd.shift().toLowerCase(),
+		args: splitCmd.join(" "),
+		parsed: parseArguments(splitCmd.join(" "))
+	};
+
+	if(config.aliases[cmd.command]) cmd.command = config.aliases[cmd.command];
+
+	return cmd;
+}
+
+function parseArguments(joinedArgs) {
+	if(typeof joinedArgs !== "string" || joinedArgs.length == 0) return [];
 
 	let strings = joinedArgs.match(/'([^']+)'/g);
 	joinedArgs = joinedArgs.replace(config.substitutionPlaceholder, "");
