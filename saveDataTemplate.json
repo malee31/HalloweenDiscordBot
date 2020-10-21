@@ -1,7 +1,8 @@
 {
 	"template": {
 		"userID": "ExampleUser",
-		"balance": 0
+		"balance": 0,
+		"trick": 0
 	},
 	"users": {
 		

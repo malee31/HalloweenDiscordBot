@@ -24,16 +24,22 @@ client.on('message', async msg => {
 		args: processCommand.join(" ").trim(),
 		parsed: argParse(processCommand.join(" "))
 	};
+
+	let userData = badDatabase.get(msg.author.id);
 	switch(cmd.command) {
 		case "greet":
 			msg.author.send("Have a SPOOKY Halloween");
 		break;
 		case "trick":
-			if(/^<@!\d+>$/.test(command.parsed[0])) msg.channel.send(`You've set up a nasty trick for ${command.parsed[0]}`);
-			else msg.channel.send(`Hmm, I can't find ${command.parsed[0]}'s address...`);
+			if(/^<@!\d+>$/.test(cmd.parsed[0])) {
+				console.log();
+				badDatabase.get(cmd.parsed[0].match(/(?<=^<@!)\d+(?=>$)/)[0]).trick += 1;
+				msg.channel.send(`You've set up a nasty trick for ${cmd.parsed[0]}`);
+			}
+			else msg.channel.send(`Hmm, I can't find ${cmd.parsed[0]}'s address...`);
 		break;
 		case "profile":
-			msg.channel.send(`${msg.author.displayAvatarURL({ dynamic: true })}`);
+			msg.channel.send(`You have ${userData.balance} candies in your Trick O' Treat bag`);
 		break;
 		case "test":
 			msg.channel.send("Yes, I'm alive. \nNo, you won't be for long.");
@@ -41,10 +47,11 @@ client.on('message', async msg => {
 		case "id":
 			msg.channel.send(`Your ID is: ${msg.author.id}`);
 		break;
-		case "increment":
-			let userData = badDatabase.get(msg.author.id);
-			userData.balance += 1;
-			msg.reply(`Tick Tock: ${userData.balance}`);
+		case "allowance":
+			let allowance = Math.floor(Math.random() * 1000);
+			userData.balance += allowance;
+			msg.channel.send(`Your mom gave you an allowance\nYou bought ${allowance} candies with it`);
+		break;
 	}
 });
 
