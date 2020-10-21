@@ -5,12 +5,15 @@ const cmdParse = require("./parts/commandParse.js");
 const argFormat = require("./parts/format.js");
 const badDatabase = require("./parts/badDatabase.js");
 
+let time = Math.floor(new Date().getTime() / 1000);
+
 client.on('message', async msg => {
 	if(msg.author.bot || !msg.content.startsWith(config.prefix)) return;
 
 	let cmd = cmdParse(msg.content);
 	let senderData = badDatabase.get(msg.author.id);
-	let time = Math.floor(new Date().getTime() / 1000);
+	let remainingCooldown = 0;
+	time = Math.floor(new Date().getTime() / 1000);
 
 	switch(cmd.command) {
 
@@ -19,32 +22,32 @@ client.on('message', async msg => {
 		break;
 
 		case "pass":
-			if(time - senderData.cooldowns.allowance < config.cooldowns.allowance) {
-				msg.channel.send(`If you take all the candy, your mom will get mad!\nCooldown: ${config.cooldowns.allowance - (time - senderData.cooldowns.allowance)}s left`);
+			remainingCooldown = cooldown("allowance", senderData);
+			if(remainingCooldown !== -1) {
+				msg.channel.send(`If you take all the candy, your mom will get mad!\nCooldown: ${remainingCooldown}s left`);
 				return;
 			}
-			senderData.cooldowns.allowance = time;
+
 			let allowance = Math.floor(Math.random() * 35) + 25;
 			senderData.balance += allowance;
 			msg.channel.send(`Your mom gave out candy and had ${allowance} candies left over for you\nHere, you can take it!`);
 		break;
 
-		case "boo!":
-		switch( ) {
-			case 1:
-			msg.channel.send("You scared the poor kid and they dropped 3 candies you ugly bastard!");
-			return;
-		}
-		senderData.cooldowns.boo = time;
-		senderData.balance += 3;
-			break;
-			case 2:
-			msg.channel.send("You tried to scare the kid but they jumped you and stole your candy! -3 candies");
-			return;
-		}
-		senderData.cooldowns.boo = time
-		senderData.balance -= 3;
-			break;
+		case "boo":
+			remainingCooldown = cooldown("boo", senderData);
+			if(remainingCooldown !== -1) {
+				msg.channel.send(`All the kids have already been scared off. Now to wait...\nCooldown: ${remainingCooldown}s left`);
+				return;
+			}
+
+			if(Math.random() < 0.5) {
+				senderData.balance += 3;
+				msg.channel.send("You scared the poor kid and they dropped 3 candies you ugly bastard!");
+			} else {
+				senderData.balance -= 3;
+				msg.channel.send("You tried to scare the kid but they jumped you and stole your candy! -3 candies");
+			}
+		break;
 
 		case "profile":
 			msg.channel.send(`You have ${senderData.balance} candies in your Trick O' Treat bag`);
@@ -65,3 +68,12 @@ client.on('message', async msg => {
 
 	}
 });
+
+function cooldown(cooldownName, senderData) {
+	if(time - senderData.cooldowns[cooldownName] < config.cooldowns[cooldownName]) {
+		return config.cooldowns[cooldownName] - (time - senderData.cooldowns[cooldownName]);
+	}
+
+	senderData.cooldowns[cooldownName] = time;
+	return -1;
+}
