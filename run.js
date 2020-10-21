@@ -52,6 +52,9 @@ client.on('message', async msg => {
 			userData.balance += allowance;
 			msg.channel.send(`Your mom gave you an allowance\nYou bought ${allowance} candies with it`);
 		break;
+		case "hello":
+			msg.channel.send("hellio");
+		break;
 	}
 });
 
