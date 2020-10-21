@@ -14,19 +14,19 @@ client.on('message', async msg => {
 
 	switch(cmd.command) {
 
-		case "allowance":
+		case "greet":
+			msg.author.send("Have a SPOOKY Halloween");
+		break;
+
+		case "pass":
 			if(time - senderData.cooldowns.allowance < config.cooldowns.allowance) {
-				msg.channel.send(`If you ask for too much money, your mom will get mad!\nCooldown: ${config.cooldowns.allowance - (time - senderData.cooldowns.allowance)}`);
+				msg.channel.send(`If you take all the candy, your mom will get mad!\nCooldown: ${config.cooldowns.allowance - (time - senderData.cooldowns.allowance)}s left`);
 				return;
 			}
 			senderData.cooldowns.allowance = time;
-			let allowance = Math.floor(Math.random() * 1000);
+			let allowance = Math.floor(Math.random() * 30) + 30;
 			senderData.balance += allowance;
-			msg.channel.send(`Your mom gave you an allowance\nYou bought ${allowance} candies with it`);
-		break;
-
-		case "greet":
-			msg.author.send("Have a SPOOKY Halloween");
+			msg.channel.send(`Your mom gave out candy and had ${allowance} candies left over for you\nHere, you can take it!`);
 		break;
 
 		case "profile":

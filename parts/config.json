@@ -9,11 +9,10 @@
 	},
 	"candyMultiplier": 2,
 	"cooldowns": {
-		"allowance": 30
+		"allowance": 82800
 	},
 	"prefix": "-",
 	"substitutionPlaceholder": "substitutionplaceholder",
 	"aliases": {
-		"allow": "allowance"
 	}
 }
