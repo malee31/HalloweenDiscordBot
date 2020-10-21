@@ -1,5 +1,5 @@
 const fs = require('fs');
-const data = require("../private/badSaveData.json");
+const data = require("../saveData.json");
 const config = require("./config.json");
 const template = config.dbSchema;
 
@@ -17,7 +17,7 @@ module.exports = {
 
 function save() {
 	let saveThis = JSON.stringify(data);
-	fs.writeFile(`${__dirname}/../private/badSaveData.json`, saveThis, (err) => {
+	fs.writeFile(`${__dirname}/../saveData.json`, saveThis, (err) => {
 		if(err) {
 			console.log(`ERROR! ${err}`);
 			console.log(`Data Dump: ${JSON.stringify(data)}`);
@@ -39,7 +39,7 @@ function get(userID) {
 		return data.users;
 	} else {
 		console.log("Making new user");
-		data.users[userID] = Object.assign({userID: userID}, data.template);
+		data.users[userID] = Object.assign({userID: userID}, template);
 		console.log("Altered: " + JSON.stringify(data));
 		return data.users[userID];
 	}
