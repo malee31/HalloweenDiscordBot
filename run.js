@@ -3,6 +3,7 @@ const client = new Discord.Client();
 const config = require("./config.js");
 const argParse = require("./arguments.js");
 const argFormat = require("./format.js");
+const badDatabase = require("./badDatabase.js");
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
@@ -37,6 +38,13 @@ client.on('message', async msg => {
 		case "test":
 			msg.channel.send("Yes, I'm alive. \nNo, you won't be for long.");
 		break;
+		case "id":
+			msg.channel.send(`Your ID is: ${msg.author.id}`);
+		break;
+		case "increment":
+			let userData = badDatabase.get(msg.author.id);
+			userData.balance += 1;
+			msg.reply(`Tick Tock: ${userData.balance}`);
 	}
 });
 
