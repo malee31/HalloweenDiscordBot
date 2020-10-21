@@ -20,10 +20,10 @@ client.on('message', async msg => {
 	switch(cmd.command) {
 
 		case "greet":
-			msg.author.send("Have a SPOOKY Halloween");
+			msg.author.send("Have a SPOOKY👻 Halloween!");
 		break;
 
-		case "pass":
+		case "pass": 
 			remainingCooldown = cooldown("pass", senderData);
 			if(remainingCooldown !== -1) {
 				msg.channel.send(`If you take all the candy, your mom will get mad!\nCooldown: ${remainingCooldown}s left`);
@@ -53,17 +53,25 @@ client.on('message', async msg => {
 
 		case "leaderboard":
 			let allUsers = badDatabase.get();
-			let topMsg = "Top Trick O' Treaters\n"
+			let exampleEmbed = new Discord.MessageEmbed()
+			.setColor('#FF7518')
+			.setTitle("Top Trick O' Treaters")
+			// .setDescription('')
+			// .setThumbnail('https://i.imgur.com/wSTFkRM.png')
+			.addField(
+				{ name: '\u200B', value: '\u200B' },
+			)
+			// .setFooter('Some footer text here', 'https://i.imgur.com/wSTFkRM.png');
 			let lead = msg.guild.members.cache.filter(member => {
 				return typeof allUsers[member.user.id] !== "undefined";
 			}).sort((a, b) => {
 				return allUsers[b.user.id].balance - allUsers[a.user.id].balance;
 			}).forEach(member => {
 				if(allUsers[member.user.id].balance == 0) return;
-				topMsg += `${allUsers[member.user.id].balance} Candies - ${member.user.username}#${member.user.discriminator}\n`;
+				exampleEmbed.addField({name: `${allUsers[member.user.id].balance}`, value: `${member.user.username}#${member.user.discriminator}`})
 			});
-
-			msg.channel.send(topMsg);
+		
+			msg.channel.send(exampleEmbed);
 		break;
 
 		case "profile":
@@ -72,6 +80,15 @@ client.on('message', async msg => {
 
 		case "pulse":
 			msg.channel.send("I'm still alive. \nBut you won't be for long.");
+		break;
+
+		case "knock":
+			if(/^<@!\d+>$/.test(cmd.parsed[0])) {
+				let userToTrick = cmd.parsed[0].match(/(?<=^<@!)\d+(?=>$)/)[0];
+				badDatabase.get(userToTrick).trick += 1;
+				msg.channel.send(`You visited ${cmd.parsed[0]} house while you were trick or treating`);
+			}
+			else msg.channel.send(`Hmm, I can't find ${cmd.parsed[0]}'s address...`);
 		break;
 
 		case "react":
@@ -84,15 +101,10 @@ client.on('message', async msg => {
 			}).catch(console.error);
 		break;
 
-		case "knock":
-			if(/^<@!\d+>$/.test(cmd.parsed[0])) {
-				let userToTrick = cmd.parsed[0].match(/(?<=^<@!)\d+(?=>$)/)[0];
-				badDatabase.get(userToTrick).trick += 1;
-				msg.channel.send(`You visited ${cmd.parsed[0]} house while you were trick or treating`);
-			}
-			else msg.channel.send(`Hmm, I can't find ${cmd.parsed[0]}'s address...`);
+		case "witch":
+			msg.channel.send("There is a Witch in your neighborhood that is passing out KING SIZED candy bars. type trick to pass offer or type treat to visit.");
 		break;
-
+	
 	}
 });
 
