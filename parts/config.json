@@ -14,9 +14,15 @@
 		"boo": 420
 	},
 	"eventDurations": {
-		"react": 10
+		"react": 10,
+		"witch": 180
 	},
+	"enabledEvents": [
+		"react",
+		"witch"
+	],
 	"eventTimerSpeed": 1000,
+	"eventBaseChance": 10,
 	"prefix": "-",
 	"substitutionPlaceholder": "substitutionplaceholder",
 	"aliases": {

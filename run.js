@@ -7,17 +7,24 @@ const badDatabase = require("./parts/badDatabase.js");
 
 let time = Math.floor(new Date().getTime() / 1000);
 let currentEvents = [];
-let eventTimer = -1;
+let eventTimer = setInterval(eventClear, config.eventTimerSpeed);
 
 client.on('message', async msg => {
-	if(msg.author.bot || !msg.content.startsWith(config.prefix)) return;
+	if(msg.author.bot) return;
+	keywordHandler(msg);
+	if(!msg.content.startsWith(config.prefix)) return;
 
 	let cmd = cmdParse(msg.content);
 	let senderData = badDatabase.get(msg.author.id);
 	let remainingCooldown = 0;
-	time = Math.floor(new Date().getTime() / 1000);
 
 	switch(cmd.command) {
+
+		case "forcestartevent":
+			if(msg.member.hasPermission("ADMINISTRATOR")) {
+				forceStartEvent(msg.channel);
+			}
+		break;
 
 		case "greet":
 			msg.author.send("Have a SPOOKY👻 Halloween!");
@@ -74,7 +81,7 @@ client.on('message', async msg => {
 			msg.channel.send(exampleEmbed);
 		break;
 
-		case "profile":
+		case "bag":
 			msg.channel.send(`You have ${senderData.balance} candies in your Trick O' Treat bag`);
 		break;
 
@@ -91,21 +98,11 @@ client.on('message', async msg => {
 			else msg.channel.send(`Hmm, I can't find ${cmd.parsed[0]}'s address...`);
 		break;
 
-		case "react":
-			msg.channel.send("QUICK! PICK UP THE CANDY!!!").then(sentMsg => {
-				startEvent({type: "react", startTime: time, id: sentMsg.id, data: ["🍬", "🍫", "🍭", "🍪"]});
-				sentMsg.react("🍬");
-				sentMsg.react("🍫");
-				sentMsg.react("🍭");
-				sentMsg.react("🍪");
-			}).catch(console.error);
-		break;
+		default:
+			return;
 
-		case "witch":
-			msg.channel.send("There is a Witch in your neighborhood that is passing out KING SIZED candy bars. type trick to pass offer or type treat to visit.");
-		break;
-	
 	}
+	randomEvent(msg.channel);
 });
 
 client.on('messageReactionAdd', (reaction, user) => {
@@ -140,7 +137,6 @@ function cooldown(cooldownName, senderData) {
 
 function startEvent(eventObject) {
 	currentEvents.push(eventObject);
-	if(eventTimer !== -1) eventTimer = setInterval(eventClear, config.eventTimerSpeed);
 }
 
 function eventClear(id) {
@@ -157,4 +153,56 @@ function eventClear(id) {
 
 function eventExpire(expiredEvent) {
 	console.log(`Expired event ${expiredEvent.type}`);
+}
+
+function randomEvent(channel) {
+	if(Math.floor(Math.random() * 100 + 1) < config.eventBaseChance) forceStartEvent(channel);
+}
+
+function forceStartEvent(channel) {
+	switch(config.enabledEvents[Math.floor(Math.random() * config.enabledEvents.length)]) {
+
+		case "react":
+			channel.send("QUICK! PICK UP THE CANDY!!!").then(sentMsg => {
+				startEvent({type: "react", startTime: time, id: sentMsg.id, data: ["🍬", "🍫", "🍭", "🍪"]});
+				sentMsg.react("🍬");
+				sentMsg.react("🍫");
+				sentMsg.react("🍭");
+				sentMsg.react("🍪");
+			}).catch(console.error);
+		break;
+
+		case "witch":
+			channel.send("There is a Witch in your neighborhood that is passing out KING SIZED candy bars.\nType \"treat\" to visit and \"trick\" to ignore.").then(sentMsg => {
+				startEvent({type: "witch", startTime: time, channelId: sentMsg.channel.id, id: sentMsg.id, data: []});
+			});
+		break;
+
+	}
+}
+
+function keywordHandler(msg) {
+	let keyword = msg.content.trim().toLowerCase();
+	switch(keyword) {
+		case "trick":
+		case "treat":
+			let eventLookup = currentEvents.filter(events => events.type == "witch" && events.channelId == msg.channel.id);
+			for(let witchEvent of eventLookup) {
+				if(witchEvent.data.includes(msg.author.id)) continue;
+
+				witchEvent.data.push(msg.author.id);
+				let witchMsg = msg.channel.messages.cache.find(msg => msg.id == witchEvent.id);
+				if(keyword == "treat") {
+					if(Math.random() < 0.5){
+						badDatabase.get(msg.author.id).balance += 15;
+						witchMsg.edit(`${witchMsg.content}\n${msg.author.username}#${msg.author.discriminator} receives a mega bar! That's like 15 normal candy bars!`);
+					} else {
+						badDatabase.get(msg.author.id).balance -= 15;
+						witchMsg.edit(`${witchMsg.content}\n${msg.author.username}#${msg.author.discriminator} was nearly knocked out by the witch's broom. You dropped 15 candies while running away`);
+					}
+				} else {
+					witchMsg.edit(`${witchMsg.content}\n${msg.author.username}#${msg.author.discriminator} was too scared to visit the witch. They're missing out`);
+				}
+			}
+	}
 }
