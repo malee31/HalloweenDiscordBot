@@ -135,6 +135,13 @@ client.on('message', async msg => {
 			}
 		break;
 
+		case "shutdown":
+			console.log(`Shutdown requested by: ${msg.author.username}#${msg.author.discriminator}`);
+			msg.reply("The Hallows shall rise again\nAnd when that happens, no one will be safe").then(() => {
+				process.exit();
+			});
+		break;
+
 		default:
 			return;
 
