@@ -24,6 +24,11 @@ client.on('message', async msg => {
 			if(msg.member.hasPermission("ADMINISTRATOR")) {
 				forceStartEvent(msg.channel);
 			}
+				forceStartEvent(msg.channel);
+		break;
+
+		case "currentevents":
+			msg.channel.send(JSON.stringify(currentEvents));
 		break;
 
 		case "greet":
@@ -150,6 +155,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 			eventLookup.data.splice(index, 1);
 			badDatabase.get(user.id).balance += 10;
 			reaction.message.edit(`${reaction.message.content}\n${user.username}#${user.discriminator} got 10 ${reaction.emoji.name}`);
+			eventClear(eventLookup.id);
 		break;
 	}
 });
@@ -210,15 +216,22 @@ function forceStartEvent(channel) {
 			});
 		break;
 
+		case "mystic":
+			channel.send('🔮"Hey!" A mysterious fortune teller beckons you towards them🔮\n"You poor innocent child, if you send the spirits an offering, they may do you a favor in return..."\nDo you dare approach her? (approach/run) <Cost: 50 candies>').then(sentMsg => {
+				startEvent({type: "mystic", startTime: time, channelId: sentMsg.channel.id, id: sentMsg.id, data: []});
+			});
+		break;
+
 	}
 }
 
 function keywordHandler(msg) {
 	let keyword = msg.content.trim().toLowerCase();
+	let eventLookup = [];
 	switch(keyword) {
 		case "trick":
 		case "treat":
-			let eventLookup = currentEvents.filter(events => events.type == "witch" && events.channelId == msg.channel.id);
+			eventLookup = currentEvents.filter(events => events.type == "witch" && events.channelId == msg.channel.id);
 			for(let witchEvent of eventLookup) {
 				if(witchEvent.data.includes(msg.author.id)) continue;
 
@@ -236,5 +249,30 @@ function keywordHandler(msg) {
 					witchMsg.edit(`${witchMsg.content}\n${msg.author.username}#${msg.author.discriminator} was too scared to visit the witch. They're missing out`);
 				}
 			}
+		break;
+		case "approach":
+		case "run":
+			eventLookup = currentEvents.filter(events => events.type == "mystic" && events.channelId == msg.channel.id);
+			for(let mysticEvent of eventLookup) {
+				if(mysticEvent.data.includes(msg.author.id)) continue;
+
+				mysticEvent.data.push(msg.author.id);
+				let mysticMsg = msg.channel.messages.cache.find(msg => msg.id == mysticEvent.id);
+				if(keyword == "approach") {
+					let rand = Math.random();
+					if(rand < 0.5){
+						rand = Math.floor(rand * 50 - 20);
+						badDatabase.get(msg.author.id).balance += rand;
+						mysticMsg.edit(`🔮 The fortune teller vanishes, leaving ${rand} candies behind for ${mysticMsg.content}\n${msg.author.username}#${msg.author.discriminator}`);
+					} else {
+						badDatabase.get(msg.author.id).balance -= 50;
+						mysticMsg.edit(`${mysticMsg.content}\nThe spirits possess ${msg.author.username}#${msg.author.discriminator} and they briefly lose consciousness.\nWhen they woke up, the fortune teller was gone. Yet it feels as if the 50 candies weren't all that they lost`);
+					}
+				} else {
+					badDatabase.get(msg.author.id).balance += 3;
+					mysticMsg.edit(`${mysticMsg.content}\n${msg.author.username}#${msg.author.discriminator} ran away and found 3 candies.`);
+				}
+			}
+		break;
 	}
 }
