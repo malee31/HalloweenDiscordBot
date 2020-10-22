@@ -165,6 +165,7 @@ client.on('messageReactionRemove', (reaction, user) => {
 });
 
 function cooldown(cooldownName, senderData) {
+	if(typeof config.cooldowns[cooldowns] == "undefined") throw "No default cooldown in config";
 	if(time - senderData.cooldowns[cooldownName] < config.cooldowns[cooldownName]) {
 		return config.cooldowns[cooldownName] - (time - senderData.cooldowns[cooldownName]);
 	}
@@ -181,6 +182,7 @@ function eventClear(id) {
 	time = Math.floor(new Date().getTime() / 1000);
 	for(let eventNum = 0; eventNum < currentEvents.length; eventNum++) {
 		let thisEvent = currentEvents[eventNum];
+		if(typeof config.eventDurations[thisEvent.type] == "undefined") throw "No default event duration in config";
 		if(time >= thisEvent.start + config.eventDurations[thisEvent.type] || (typeof id !== "undefined" && thisEvent.id == id)) {
 			currentEvents.splice(eventNum, 1);
 			eventExpire(thisEvent);
