@@ -63,7 +63,7 @@ client.on('message', async msg => {
 
 			let leaderboardEmbed = new Discord.MessageEmbed()
 			.setColor('#FF7518')
-			.setTitle("Top Trick O' Treaters")
+			.setTitle("Top Trick o' Treaters")
 			.setDescription("It's a race to the top")
 			.setThumbnail(msg.guild.iconURL({dynamic: true}))
 			.setImage("https://media1.tenor.com/images/cbe3dc34cec7df2df230e064fc173d39/tenor.gif")
@@ -78,7 +78,7 @@ client.on('message', async msg => {
 			}).forEach(member => {
 				if(allUsers[member.user.id].balance == 0) return;
 				let marker = "🎃 ";
-				leaderboardEmbed.addField(`${marker}${allUsers[member.user.id].balance} Candies - ${member.user.username}#${member.user.discriminator}`, (typeof previous == "undefined" ? "The Ruler of Trick O' Treating!" : `${previous - allUsers[member.user.id].balance} Candies behind #${index}`));
+				leaderboardEmbed.addField(`${marker}${allUsers[member.user.id].balance} Candies - ${member.user.username}#${member.user.discriminator}`, (typeof previous == "undefined" ? "The Ruler of Trick o' Treating!" : `${previous - allUsers[member.user.id].balance} Candies behind #${index}`));
 				previous = allUsers[member.user.id].balance;
 				index++;
 			});
@@ -87,7 +87,7 @@ client.on('message', async msg => {
 		break;
 
 		case "bag":
-			msg.channel.send(`You have ${senderData.balance} candies in your Trick O' Treat bag`);
+			msg.channel.send(`You have ${senderData.balance} candies in your Trick o' Treat bag`);
 		break;
 
 		case "pulse":
@@ -98,9 +98,36 @@ client.on('message', async msg => {
 			if(/^<@!\d+>$/.test(cmd.parsed[0])) {
 				let userToTrick = cmd.parsed[0].match(/(?<=^<@!)\d+(?=>$)/)[0];
 				badDatabase.get(userToTrick).trick += 1;
-				msg.channel.send(`You visited ${cmd.parsed[0]} house while you were trick or treating`);
+				msg.channel.send(`You visited ${cmd.parsed[0]} house while you were trick o' treating`);
 			}
 			else msg.channel.send(`Hmm, I can't find ${cmd.parsed[0]}'s address...`);
+		break;
+
+		case "trickotreat":
+			remainingCooldown = cooldown("trickotreat", senderData);
+			if(remainingCooldown !== -1) {
+				msg.channel.send(`"Walk to the next house! Stop running or we're never trick o' treating again!"\n-Your Mom\nCooldown: ${remainingCooldown}s left`);
+				return;
+			}
+
+			let chance = Math.random();
+			if(chance < 0.1) {
+				senderData.balance += 20;
+				msg.channel.send("OHHH! This is a rich neighborhood! +20 candies");
+			} else if(chance < 0.25) {
+				senderData.balance -= 10;
+				msg.channel.send("You got beat up by the kid in a full Batman costume. Ugh, rich kids. -10 candies");
+			} else if(chance < 0.35) {
+				msg.channel.send("Licorice and Bottle Caps don't qualify as candy. +0 candy");
+			} else if(chance < 0.45) {
+				senderData.balance += 1;
+				msg.channel.send("\"Take One.\" Cheapskate. +1 candy");
+			} else if(chance < 0.70) {
+				senderData.balance += 5;
+				msg.channel.send("\"That's a nice costume you've got, dear. Here you go, Happy Halloween.\" +5 candies");
+			} else {
+				msg.channel.send("No one answered the door");
+			}
 		break;
 
 		default:

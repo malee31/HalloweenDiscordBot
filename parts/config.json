@@ -5,13 +5,15 @@
 		"trick": 0,
 		"cooldowns": {
 			"pass": 0,
-			"boo": 0
+			"boo": 0,
+			"treatotreat": 0
 		}
 	},
 	"candyMultiplier": 2,
 	"cooldowns": {
 		"pass": 82800,
-		"boo": 420
+		"boo": 420,
+		"trickotreat": 10
 	},
 	"eventDurations": {
 		"react": 10,
@@ -28,6 +30,8 @@
 	"aliases": {
 		"scare": "boo",
 		"lead": "leaderboard",
-		"top": "leaderboard"
+		"top": "leaderboard",
+		"tricktreat": "trickotreat",
+		"trick/treat": "trickotreat"
 	}
 }
