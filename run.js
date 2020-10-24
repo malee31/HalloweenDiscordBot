@@ -6,7 +6,7 @@ const config = require("./parts/config.json");
 const argFormat = require("./parts/format.js");
 const cmdParse = require("./parts/commandParse.js");
 const badDatabase = require("./parts/badDatabase.js");
-const {randomEvent} = require("./parts/randomEvent.js");
+const {randomEvent, clearEvents, currentEvents} = require("./parts/randomEvent.js");
 
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync(`${__dirname}/commands`).filter(file => file.endsWith('.js'));
@@ -30,6 +30,7 @@ client.on('message', async message => {
 
 	let {command, args} = cmdParse(message.content);
 	command = client.commands.get(command) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command));
+	if(!command) return;
 
 	if(command.guildOnly && message.channel.type == 'dm') {
 		return message.reply('I can\'t execute that command inside DMs!');
@@ -162,9 +163,9 @@ client.login(process.env.discordtoken);
 //For randomEvents.js
 client.on('messageReactionAdd', (reaction, user) => {
 	//console.log(`${user.username} reacted with "${reaction.emoji.name}".`);
-	eventClear();
+	clearEvents();
 	if(user.bot) return;
-	let eventLookup = eventsNow().find(events => events.id == reaction.message.id);
+	let eventLookup = currentEvents().find(events => events.id == reaction.message.id);
 	if(typeof eventLookup == "undefined") return;
 	switch(eventLookup.type) {
 		case "react":
@@ -173,7 +174,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 			eventLookup.data.splice(index, 1);
 			badDatabase.get(user.id).balance += 10;
 			reaction.message.edit(`${reaction.message.content}\n${user.username}#${user.discriminator} got 10 ${reaction.emoji.name}`);
-			eventClear(eventLookup.id);
+			clearEvents(eventLookup.id);
 		break;
 	}
 });

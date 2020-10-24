@@ -28,12 +28,5 @@
 	"eventTimerSpeed": 1000,
 	"eventBaseChance": 10,
 	"prefix": "-",
-	"substitutionPlaceholder": "substitutionplaceholder",
-	"aliases": {
-		"scare": "boo",
-		"lead": "leaderboard",
-		"top": "leaderboard",
-		"tricktreat": "trickotreat",
-		"trick/treat": "trickotreat"
-	}
+	"substitutionPlaceholder": "substitutionplaceholder"
 }

@@ -13,7 +13,8 @@ module.exports = {
 	currentEvents() {
 		clearEvents();
 		return runningEvents;
-	}
+	},
+	clearEvents
 };
 
 function forceStartEvent(channel) {

@@ -2,6 +2,7 @@ const badDatabase = require("../parts/badDatabase.js");
 
 module.exports = {
 	name: 'boo',
+	aliases: ['scare'],
 	description: 'Scare the neighborhood Trick o\' Treaters and take their candy',
 	cooldown: 420,
 	cooldownMessage(message, cooldown) {

@@ -4,6 +4,7 @@ const badDatabase = require("../parts/badDatabase.js");
 module.exports = {
 	name: 'leaderboard',
 	description: 'Find out who\'s really at the top',
+	aliases: ["top", "lead"],
 	guildOnly: true,
 	execute(message) {
 		let allUsers = badDatabase.get();
