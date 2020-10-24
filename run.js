@@ -25,7 +25,7 @@ client.on('ready', () => {
 
 client.on('message', async message => {
 	if(message.author.bot) return;
-	//keywordHandler(message);
+	keywordHandler(message);
 	if(!message.content.startsWith(config.prefix)) return;
 
 	let {command, args} = cmdParse(message.content);
@@ -146,7 +146,7 @@ function keywordHandler(message) {
 					if(rand < 0.5){
 						rand = Math.floor(rand * 50 - 20);
 						badDatabase.get(message.author.id).balance += rand;
-						mysticMsg.edit(`🔮 The fortune teller vanishes, leaving ${rand} candies behind for ${mysticMsg.content}\n${message.author.username}#${message.author.discriminator}`);
+						mysticMsg.edit(`${mysticMsg.content}\n🔮 The fortune teller vanishes, leaving ${rand} candies behind for ${message.author.username}#${message.author.discriminator}`);
 					} else {
 						badDatabase.get(message.author.id).balance -= 50;
 						mysticMsg.edit(`${mysticMsg.content}\nThe spirits possess ${message.author.username}#${message.author.discriminator} and they briefly lose consciousness.\nWhen they woke up, the fortune teller was gone. Yet it feels as if the 50 candies weren't all that they lost`);
