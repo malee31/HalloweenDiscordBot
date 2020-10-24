@@ -74,26 +74,6 @@ client.on('message', async message => {
 	}
 
 	randomEvent(message.channel);
-	/*let senderData = badDatabase.get(message.author.id);
-		case "forcestartevent":
-			if(message.member.hasPermission("ADMINISTRATOR")) {
-				forceStartEvent(message.channel);
-			}
-		break;
-
-		case "currentevents":
-			message.channel.send(JSON.stringify(eventsNow()));
-		break;
-
-		case "knock":
-			if(/^<@!\d+>$/.test(cmd.parsed[0])) {
-				let userToTrick = cmd.parsed[0].match(/(?<=^<@!)\d+(?=>$)/)[0];
-				badDatabase.get(userToTrick).trick += 1;
-				message.channel.send(`You visited ${cmd.parsed[0]} house while you were trick o' treating`);
-			}
-			else message.channel.send(`Hmm, I can't find ${cmd.parsed[0]}'s address...`);
-		break;
-	}*/
 });
 
 const events = {
