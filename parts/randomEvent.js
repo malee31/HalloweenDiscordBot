@@ -43,7 +43,9 @@ function forceStartEvent(channel) {
 		case "witch":
 			randomEventEmbed.setDescription('There is a Witch in your neighborhood that is passing out KING SIZED candy bars.\nType \"treat\" to visit and \"trick\" to ignore.')
 		    .setColor('#0EB533')
-		    channel.send(randomEventsEmbed).then(sentMsg => {
+			 .setImage("https://media1.tenor.com/images/bed062b6c8a55f6aa375f944aecd7918/tenor.gif");
+
+		    channel.send(randomEventEmbed).then(sentMsg => {
 				startEvent({type: "witch", startTime: time, channelId: sentMsg.channel.id, id: sentMsg.id, data: []});
 		    });
 
