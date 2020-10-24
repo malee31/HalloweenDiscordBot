@@ -45,7 +45,9 @@ client.on('message', async message => {
 	}
 
 	const now = Date.now();
-	if(!cooldowns.get(command.name)) cooldowns.set(command.name, new Discord.Collection());
+	if(!cooldowns.get(command.name)) {
+		cooldowns.set(command.name, new Discord.Collection());
+	}
 	const timestamps = cooldowns.get(command.name);
 	const cooldownAmount = (command.cooldown || 3) * 1000;
 
@@ -70,15 +72,7 @@ client.on('message', async message => {
 		message.reply('there was an error trying to execute that command!');
 	}
 
-	/*if(!cooldowns.has(command.name)) {
-		cooldowns.set(command.name, new Discord.Collection());
-	}*/
-
 	/*let senderData = badDatabase.get(message.author.id);
-	let remainingCooldown = 0;
-
-	switch(cmdParsed.command) {
-
 		case "forcestartevent":
 			if(message.member.hasPermission("ADMINISTRATOR")) {
 				forceStartEvent(message.channel);
@@ -89,58 +83,6 @@ client.on('message', async message => {
 			message.channel.send(JSON.stringify(eventsNow()));
 		break;
 
-		case "boo":
-			remainingCooldown = cooldown("boo", senderData);
-			if(remainingCooldown !== -1) {
-				message.channel.send(`All the kids have already been scared off. Now to wait...\nCooldown: ${remainingCooldown}`);
-				return;
-			}
-
-			if(Math.random() < 0.5) {
-				senderData.balance += 3;
-				message.channel.send("You scared the poor kid and they dropped 3 candies you ugly bastard!");
-			} else {
-				senderData.balance -= 3;
-				message.channel.send("You tried to scare the kid but they jumped you and stole your candy! -3 candies");
-			}
-		break;
-
-		case "leaderboard":
-			let allUsers = badDatabase.get();
-
-			let leaderboardEmbed = new Discord.MessageEmbed()
-			.setColor('#FF7518')
-			.setTitle("Top Trick o' Treaters")
-			.setDescription("It's a race to the top")
-			.setThumbnail(message.guild.iconURL({dynamic: true}))
-			.setImage("https://media1.tenor.com/images/cbe3dc34cec7df2df230e064fc173d39/tenor.gif")
-			.setFooter('🕸️ Get to the top before Spooky Season ends 🕸️');
-
-			let previous;
-			let index = 0;
-			let lead = message.guild.members.cache.filter(member => {
-				return typeof allUsers[member.user.id] !== "undefined";
-			}).sort((a, b) => {
-				return allUsers[b.user.id].balance - allUsers[a.user.id].balance;
-			}).forEach(member => {
-				if(allUsers[member.user.id].balance == 0) return;
-				let marker = "🎃 ";
-				leaderboardEmbed.addField(`${marker}${allUsers[member.user.id].balance} Candies - ${member.user.username}#${member.user.discriminator}`, (typeof previous == "undefined" ? "The Ruler of Trick o' Treating!" : `${previous - allUsers[member.user.id].balance} Candies behind #${index}`));
-				previous = allUsers[member.user.id].balance;
-				index++;
-			});
-		
-			message.channel.send(leaderboardEmbed);
-		break;
-
-		case "bag":
-			message.channel.send(`You have ${senderData.balance} candies in your Trick o' Treat bag`);
-		break;
-
-		case "pulse":
-			message.channel.send("I'm still alive. \nBut you won't be for long.");
-		break;
-
 		case "knock":
 			if(/^<@!\d+>$/.test(cmd.parsed[0])) {
 				let userToTrick = cmd.parsed[0].match(/(?<=^<@!)\d+(?=>$)/)[0];
@@ -149,49 +91,11 @@ client.on('message', async message => {
 			}
 			else message.channel.send(`Hmm, I can't find ${cmd.parsed[0]}'s address...`);
 		break;
-
-		case "trickotreat":
-			remainingCooldown = cooldown("trickotreat", senderData);
-			if(remainingCooldown !== -1) {
-				message.channel.send(`"Walk to the next house! Stop running or we're never trick o' treating again!"\n-Your Mom\nCooldown: ${remainingCooldown}`);
-				return;
-			}
-
-			let chance = Math.random();
-			if(chance < 0.1) {
-				senderData.balance += 20;
-				message.channel.send("OHHH! This is a rich neighborhood! +20 candies");
-			} else if(chance < 0.25) {
-				senderData.balance -= 10;
-				message.channel.send("You got beat up by the kid in a full Batman costume. Ugh, rich kids. -10 candies");
-			} else if(chance < 0.35) {
-				message.channel.send("Licorice and Bottle Caps don't qualify as candy. +0 candy");
-			} else if(chance < 0.45) {
-				senderData.balance += 1;
-				message.channel.send("\"Take One.\" Cheapskate. +1 candy");
-			} else if(chance < 0.70) {
-				senderData.balance += 5;
-				message.channel.send("\"That's a nice costume you've got, dear. Here you go, Happy Halloween.\" +5 candies");
-			} else {
-				message.channel.send("No one answered the door");
-			}
-		break;
-
-		case "shutdown":
-			console.log(`Shutdown requested by: ${message.author.username}#${message.author.discriminator}`);
-			message.reply("The Hallows shall rise again\nAnd when that happens, no one will be safe").then(() => {
-				process.exit();
-			});
-		break;
-
-		default:
-			return;
-
 	}
 	randomEvent(message.channel);*/
 });
 
-/*const events = {
+const events = {
 	MESSAGE_REACTION_ADD: 'messageReactionAdd',
 	MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
@@ -210,7 +114,7 @@ client.on('raw', async event => {
 	const reaction = message.reactions.cache.get(emojiKey);
 
 	client.emit(events[event.t], reaction, user);
-});*/
+});
 
 client.once("reconnecting", () => {
 	console.log("Reconnecting, whoops");
