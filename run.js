@@ -6,6 +6,7 @@ const config = require("./parts/config.json");
 const argFormat = require("./parts/format.js");
 const cmdParse = require("./parts/commandParse.js");
 const badDatabase = require("./parts/badDatabase.js");
+const {randomEvent} = require("./parts/randomEvent.js");
 
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync(`${__dirname}/commands`).filter(file => file.endsWith('.js'));
@@ -49,7 +50,7 @@ client.on('message', async message => {
 		cooldowns.set(command.name, new Discord.Collection());
 	}
 	const timestamps = cooldowns.get(command.name);
-	const cooldownAmount = (command.cooldown || 3) * 1000;
+	const cooldownAmount = command.cooldown * 1000 || 0;
 
 	if(timestamps.has(message.author.id)) {
 		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
@@ -72,6 +73,7 @@ client.on('message', async message => {
 		message.reply('there was an error trying to execute that command!');
 	}
 
+	randomEvent(message.channel);
 	/*let senderData = badDatabase.get(message.author.id);
 		case "forcestartevent":
 			if(message.member.hasPermission("ADMINISTRATOR")) {
@@ -91,8 +93,7 @@ client.on('message', async message => {
 			}
 			else message.channel.send(`Hmm, I can't find ${cmd.parsed[0]}'s address...`);
 		break;
-	}
-	randomEvent(message.channel);*/
+	}*/
 });
 
 const events = {
@@ -176,79 +177,9 @@ client.login(process.env.discordtoken);
 			}
 		break;
 	}
-}
+}*/
 
-//randomEvents.js
-let currentEvents = [];
-let eventTimer = setInterval(eventClear, config.eventTimerSpeed);
-
-function time() {
-	return Math.floor(new Date().getTime() / 1000);
-}
-
-function eventClear(id) {
-	for(let eventNum = 0; eventNum < currentEvents.length; eventNum++) {
-		let thisEvent = currentEvents[eventNum];
-		if(typeof config.eventDurations[thisEvent.type] == "undefined") throw "No default event duration in config";
-		if(time() >= thisEvent.start + config.eventDurations[thisEvent.type] || (typeof id !== "undefined" && thisEvent.id == id)) {
-			currentEvents.splice(eventNum, 1);
-			eventExpire(thisEvent);
-			eventNum--;
-		}
-	}
-}
-
-function cooldown(cooldownName, senderData) {
-	if(typeof config.cooldowns[cooldownName] == "undefined") throw "No default cooldown in config";
-	if(time() - senderData.cooldowns[cooldownName] < config.cooldowns[cooldownName]) {
-		let cooldownTime = config.cooldowns[cooldownName] - (time() - senderData.cooldowns[cooldownName]);
-		return (cooldownTime % 360 >= 1 ? `${Math.floor(cooldownTime / 360) / 10} hours` : (cooldownTime % 60 >= 1 ? `${Math.floor(cooldownTime / 6) / 10} minutes` : `${Math.floor(cooldownTime * 10) / 10} seconds`)) + " left";
-	}
-
-	senderData.cooldowns[cooldownName] = time();
-	return -1;
-}
-
-function startEvent(eventObject) {
-	currentEvents.push(eventObject);
-}
-
-function eventExpire(expiredEvent) {
-	console.log(`Expired event ${expiredEvent.type}`);
-}
-
-function randomEvent(channel) {
-	if(Math.floor(Math.random() * 100 + 1) < config.eventBaseChance) forceStartEvent(channel);
-}
-
-function forceStartEvent(channel) {
-	switch(config.enabledEvents[Math.floor(Math.random() * config.enabledEvents.length)]) {
-
-		case "react":
-			channel.send("QUICK! PICK UP THE CANDY!!!").then(sentMsg => {
-				startEvent({type: "react", startTime: time(), id: sentMsg.id, data: ["🍬", "🍫", "🍭", "🍪"]});
-				sentMsg.react("🍬");
-				sentMsg.react("🍫");
-				sentMsg.react("🍭");
-				sentMsg.react("🍪");
-			}).catch(console.error);
-		break;
-
-		case "witch":
-			channel.send("There is a Witch in your neighborhood that is passing out KING SIZED candy bars.\nType \"treat\" to visit and \"trick\" to ignore.").then(sentMsg => {
-				startEvent({type: "witch", startTime: time(), channelId: sentMsg.channel.id, id: sentMsg.id, data: []});
-			});
-		break;
-
-		case "mystic":
-			channel.send('🔮"Hey!" A mysterious fortune teller beckons you towards them🔮\n"You poor innocent child, if you send the spirits an offering, they may do you a favor in return..."\nDo you dare approach her? (approach/run) <Cost: 50 candies>').then(sentMsg => {
-				startEvent({type: "mystic", startTime: time(), channelId: sentMsg.channel.id, id: sentMsg.id, data: []});
-			});
-		break;
-
-	}
-}
-
+//For randomEvents.js
 client.on('messageReactionAdd', (reaction, user) => {
 	//console.log(`${user.username} reacted with "${reaction.emoji.name}".`);
 	eventClear();
@@ -270,8 +201,3 @@ client.on('messageReactionAdd', (reaction, user) => {
 client.on('messageReactionRemove', (reaction, user) => {
 	console.log(`${user.username} removed their "${reaction.emoji.name}" reaction.`);
 });
-
-function getCurrentEvents() {
-	eventClear();
-	return currentEvents;
-}*/
