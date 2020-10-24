@@ -52,8 +52,8 @@ function forceStartEvent(channel) {
 		break;
 
 		case "mystic":
-			randomEventEmbed.setDescription(🔮"Hey!" A mysterious fortune teller beckons you towards them🔮\n"You poor innocent child, if you send the spirits an offering, they may do you a favor in return..."\nDo you dare approach her? (approach/run) <Cost: 15 candies>)
-		    .setColor('#b13dff')
+			randomEventEmbed.setDescription('"Hey!" A mysterious fortune teller beckons you towards them\n"You poor innocent child, if you send the spirits an offering, they may do you a favor in return..."\nDo you dare approach her? (approach/run) <Cost: 15 candies>')
+			.setColor('#B13DFF')
 			.setImage("https://cdn.discordapp.com/attachments/768224531126026295/769704291228581888/giphy.gif");
 			
 			channel.send(randomEventEmbed).then(sentMsg => {
