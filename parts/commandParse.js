@@ -7,11 +7,10 @@ module.exports = commandInput => {
 
 	let cmd = {
 		command: splitCmd.shift().toLowerCase(),
-		args: splitCmd.join(" "),
-		parsed: parseArguments(splitCmd.join(" "))
+		args: parseArguments(splitCmd.join(" "))
 	};
 
-	if(config.aliases[cmd.command]) cmd.command = config.aliases[cmd.command];
+	//if(config.aliases[cmd.command]) cmd.command = config.aliases[cmd.command];
 
 	return cmd;
 }

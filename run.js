@@ -1,21 +1,82 @@
+require('dotenv').config();
+const fs = require("fs");
 const Discord = require("discord.js");
-const client = require("./parts/bot.js");
+const client = new Discord.Client();
 const config = require("./parts/config.json");
 const argFormat = require("./parts/format.js");
 const cmdParse = require("./parts/commandParse.js");
 const badDatabase = require("./parts/badDatabase.js");
-const { eventsNow, forceStartEvent, randomEvent, cooldown } = require("./parts/randomEvent.js");
 
-client.on('message', async msg => {
-	if(msg.author.bot) return;
-	keywordHandler(msg);
-	if(!msg.content.startsWith(config.prefix)) return;
+client.commands = new Discord.Collection();
+const commandFiles = fs.readdirSync(`${__dirname}/commands`).filter(file => file.endsWith('.js'));
 
-	let cmd = cmdParse(msg.content);
-	let senderData = badDatabase.get(msg.author.id);
+for(const file of commandFiles) {
+	const command = require(`${__dirname}/commands/${file}`);
+	client.commands.set(command.name, command);
+}
+
+const cooldowns = new Discord.Collection();
+
+client.on('ready', () => {
+	console.log(`Logged in as ${client.user.tag}!`);
+	client.user.setActivity("the SCREAMS of the Innocent", {type: "LISTENING"});
+});
+
+client.on('message', async message => {
+	if(message.author.bot) return;
+	//keywordHandler(message);
+	if(!message.content.startsWith(config.prefix)) return;
+
+	let {command, args} = cmdParse(message.content);
+	command = client.commands.get(command) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command));
+
+	if(command.guildOnly && message.channel.type == 'dm') {
+		return message.reply('I can\'t execute that command inside DMs!');
+	}
+
+	if(command.args && !args.length) {
+		let reply = `You didn't provide any arguments, ${message.author}!`;
+
+		if(command.usage) {
+			reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+		}
+
+		return message.channel.send(reply);
+	}
+
+	const now = Date.now();
+	if(!cooldowns.get(command.name)) cooldowns.set(command.name, new Discord.Collection());
+	const timestamps = cooldowns.get(command.name);
+	const cooldownAmount = (command.cooldown || 3) * 1000;
+
+	if(timestamps.has(message.author.id)) {
+		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+
+		if(now < expirationTime) {
+			const timeLeft = (expirationTime - now) / 1000;
+			return message.reply(`please wait ${timeLeft.toFixed(1)} more second${timeLeft.toFixed(1) == 1 ? '' : 's'} before reusing the \`${command.name}\` command.`);
+		}
+	}
+
+	timestamps.set(message.author.id, now);
+	//TODO: See if there is a way to remove this timeout
+	setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+
+	try {
+		command.execute(message, args);
+	} catch (error) {
+		console.error(error);
+		message.reply('there was an error trying to execute that command!');
+	}
+
+	/*if(!cooldowns.has(command.name)) {
+		cooldowns.set(command.name, new Discord.Collection());
+	}*/
+
+	/*let senderData = badDatabase.get(msg.author.id);
 	let remainingCooldown = 0;
 
-	switch(cmd.command) {
+	switch(cmdParsed.command) {
 
 		case "forcestartevent":
 			if(msg.member.hasPermission("ADMINISTRATOR")) {
@@ -142,11 +203,41 @@ client.on('message', async msg => {
 			return;
 
 	}
-	randomEvent(msg.channel);
+	randomEvent(msg.channel);*/
 });
 
+/*const events = {
+	MESSAGE_REACTION_ADD: 'messageReactionAdd',
+	MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
+};
 
-function keywordHandler(msg) {
+client.on('raw', async event => {
+	if (!events.hasOwnProperty(event.t)) return;
+
+	const { d: data } = event;
+	const user = client.users.cache.get(data.user_id);
+	const channel = client.channels.cache.get(data.channel_id);
+
+	if (channel.messages.cache.has(data.message_id)) return;
+
+	const message = await channel.messages.fetch(data.message_id);
+	const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+	const reaction = message.reactions.cache.get(emojiKey);
+
+	client.emit(events[event.t], reaction, user);
+});*/
+
+client.once("reconnecting", () => {
+	console.log("Reconnecting, whoops");
+});
+
+client.once("disconnect", () => {
+	console.log("Disconnecting. Goodbye!");
+});
+
+client.login(process.env.discordtoken);
+
+/*function keywordHandler(msg) {
 	let keyword = msg.content.trim().toLowerCase();
 	let eventLookup = [];
 	switch(keyword) {
@@ -197,3 +288,101 @@ function keywordHandler(msg) {
 		break;
 	}
 }
+
+//randomEvents.js
+let currentEvents = [];
+let eventTimer = setInterval(eventClear, config.eventTimerSpeed);
+
+function time() {
+	return Math.floor(new Date().getTime() / 1000);
+}
+
+function eventClear(id) {
+	for(let eventNum = 0; eventNum < currentEvents.length; eventNum++) {
+		let thisEvent = currentEvents[eventNum];
+		if(typeof config.eventDurations[thisEvent.type] == "undefined") throw "No default event duration in config";
+		if(time() >= thisEvent.start + config.eventDurations[thisEvent.type] || (typeof id !== "undefined" && thisEvent.id == id)) {
+			currentEvents.splice(eventNum, 1);
+			eventExpire(thisEvent);
+			eventNum--;
+		}
+	}
+}
+
+function cooldown(cooldownName, senderData) {
+	if(typeof config.cooldowns[cooldownName] == "undefined") throw "No default cooldown in config";
+	if(time() - senderData.cooldowns[cooldownName] < config.cooldowns[cooldownName]) {
+		let cooldownTime = config.cooldowns[cooldownName] - (time() - senderData.cooldowns[cooldownName]);
+		return (cooldownTime % 360 >= 1 ? `${Math.floor(cooldownTime / 360) / 10} hours` : (cooldownTime % 60 >= 1 ? `${Math.floor(cooldownTime / 6) / 10} minutes` : `${Math.floor(cooldownTime * 10) / 10} seconds`)) + " left";
+	}
+
+	senderData.cooldowns[cooldownName] = time();
+	return -1;
+}
+
+function startEvent(eventObject) {
+	currentEvents.push(eventObject);
+}
+
+function eventExpire(expiredEvent) {
+	console.log(`Expired event ${expiredEvent.type}`);
+}
+
+function randomEvent(channel) {
+	if(Math.floor(Math.random() * 100 + 1) < config.eventBaseChance) forceStartEvent(channel);
+}
+
+function forceStartEvent(channel) {
+	switch(config.enabledEvents[Math.floor(Math.random() * config.enabledEvents.length)]) {
+
+		case "react":
+			channel.send("QUICK! PICK UP THE CANDY!!!").then(sentMsg => {
+				startEvent({type: "react", startTime: time(), id: sentMsg.id, data: ["🍬", "🍫", "🍭", "🍪"]});
+				sentMsg.react("🍬");
+				sentMsg.react("🍫");
+				sentMsg.react("🍭");
+				sentMsg.react("🍪");
+			}).catch(console.error);
+		break;
+
+		case "witch":
+			channel.send("There is a Witch in your neighborhood that is passing out KING SIZED candy bars.\nType \"treat\" to visit and \"trick\" to ignore.").then(sentMsg => {
+				startEvent({type: "witch", startTime: time(), channelId: sentMsg.channel.id, id: sentMsg.id, data: []});
+			});
+		break;
+
+		case "mystic":
+			channel.send('🔮"Hey!" A mysterious fortune teller beckons you towards them🔮\n"You poor innocent child, if you send the spirits an offering, they may do you a favor in return..."\nDo you dare approach her? (approach/run) <Cost: 50 candies>').then(sentMsg => {
+				startEvent({type: "mystic", startTime: time(), channelId: sentMsg.channel.id, id: sentMsg.id, data: []});
+			});
+		break;
+
+	}
+}
+
+client.on('messageReactionAdd', (reaction, user) => {
+	//console.log(`${user.username} reacted with "${reaction.emoji.name}".`);
+	eventClear();
+	if(user.bot) return;
+	let eventLookup = eventsNow().find(events => events.id == reaction.message.id);
+	if(typeof eventLookup == "undefined") return;
+	switch(eventLookup.type) {
+		case "react":
+			let index = eventLookup.data.indexOf(reaction.emoji.name);
+			if(index == -1) return;
+			eventLookup.data.splice(index, 1);
+			badDatabase.get(user.id).balance += 10;
+			reaction.message.edit(`${reaction.message.content}\n${user.username}#${user.discriminator} got 10 ${reaction.emoji.name}`);
+			eventClear(eventLookup.id);
+		break;
+	}
+});
+
+client.on('messageReactionRemove', (reaction, user) => {
+	console.log(`${user.username} removed their "${reaction.emoji.name}" reaction.`);
+});
+
+function getCurrentEvents() {
+	eventClear();
+	return currentEvents;
+}*/
