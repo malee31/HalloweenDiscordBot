@@ -109,6 +109,24 @@ client.on('message', async msg => {
   				msg.channel.send("You knocked on ${cmd.parsed[0]}'s door there was no response and the candy bucket outside is all empty.")
 		break;
 
+		case "pun":
+			let chance = Math.random();
+		  	if(chance < 0.1) {
+				senderData.balance += 20;
+				msg.channel.send("What instrument does a skeleton play? A trombone");
+			} else if(chance < 0.25) {
+				msg.channel.send("Did you know getting kissed by a vampire is a pain in the neck?");
+			} else if(chance < 0.35) {
+				msg.channel.send("Why do ghost make the best cheerleader? cuz they got lots of spirit.");
+			} else if(chance < 0.45) {
+				msg.channel.send("if you got it, huant it!");
+			} else if(chance < 0.70) {
+				msg.channel.send("I have some vampire puns but they suck");
+			} else {
+				msg.channel.send("Halloween's not the same if i can't be witch you");
+			}	
+		break;
+
 		case "trickotreat":
 			remainingCooldown = cooldown("trickotreat", senderData);
 			if(remainingCooldown !== -1) {
@@ -148,7 +166,7 @@ client.on('message', async msg => {
 
 	}
 	randomEvent(msg.channel);
-};
+});
 
 
 function keywordHandler(msg) {
