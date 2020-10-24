@@ -99,11 +99,11 @@ client.on('message', async msg => {
 			if(/^<@!\d+>$/.test(cmd.parsed[0])) {
 				if(Math.random() < 0.20) {
 				senderData.balance += 7;
-				${cmd.parsed[0]}.balance -= 7;
+				badDatabase.get(cmd.parsed[0].match(/(?<=^<@!)\d+(?=>$)/)[0].balance -= 7;
 				msg.channel.send("You knocked on ${cmd.parsed[0]}'s door but they weren't home. However there was candy outside it said to take ONE but you took 7 pieces. Don't be so greedy there won't be candy left for anyone else!");
 				} else if (Math.random() < 0.8) {
 				senderData.balance += 2;
-				${cmd.parsed[0]}.balance -= 2;
+				badDatabase.get(cmd.parsed[0].match(/(?<=^<@!)\d+(?=>$)/)[0].balance -= 2;
 				msg.channel.send("You knocked on ${cmd.parsed[0]}'s door and they opened the door and gave you two piece of candy");
 				} else {
   				msg.channel.send("You knocked on ${cmd.parsed[0]}'s door there was no response and the candy bucket outside is all empty.")
