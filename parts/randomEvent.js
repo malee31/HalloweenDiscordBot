@@ -21,14 +21,14 @@ function forceStartEvent(channel) {
 	let time = Date.now();
 
 	let randomEventEmbed = new Discord.MessageEmbed()
-	.setColor('#0EB533')
 	.setTitle("Random Event!")
 
 	switch(config.enabledEvents[Math.floor(Math.random() * config.enabledEvents.length)]) {
 
 		case "react":
 
-			randomEventEmbed.setDescription("QUICK! PICK UP THE CANDY!!!")
+			randomEventEmbed.setDescription("🍬🍫QUICK! PICK UP THE CANDY!!!🍭🍪")
+			.setColor('#f8ff38')
 			.setImage("https://media1.tenor.com/images/9e9cde402d3774bf59b4627219ed7c0c/tenor.gif")
 
 			channel.send(randomEventEmbed).then(sentMsg => {
@@ -41,9 +41,12 @@ function forceStartEvent(channel) {
 		break;
 
 		case "witch":
-			channel.send("There is a Witch in your neighborhood that is passing out KING SIZED candy bars.\nType \"treat\" to visit and \"trick\" to ignore.").then(sentMsg => {
+			randomEventEmbed.setDescription('There is a Witch in your neighborhood that is passing out KING SIZED candy bars.\nType \"treat\" to visit and \"trick\" to ignore.')
+		    .setColor('#0EB533')
+		    channel.send(randomEventsEmbed).then(sentMsg => {
 				startEvent({type: "witch", startTime: time, channelId: sentMsg.channel.id, id: sentMsg.id, data: []});
-			});
+		    });
+
 		break;
 
 		case "mystic":
