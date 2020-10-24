@@ -11,9 +11,9 @@
 	},
 	"candyMultiplier": 2,
 	"cooldowns": {
-		"pass": 82800,
+		"pass": 75600,
 		"boo": 420,
-		"trickotreat": 10
+		"trickotreat": 3600
 	},
 	"eventDurations": {
 		"react": 10,
