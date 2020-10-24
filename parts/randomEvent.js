@@ -1,4 +1,4 @@
-//const Discord = require("discord.js");
+const Discord = require("discord.js");
 const config = require("./config.json");
 const runningEvents = [];
 let eventTimer = setInterval(clearEvents, config.eventTimerSpeed);
@@ -19,10 +19,19 @@ module.exports = {
 
 function forceStartEvent(channel) {
 	let time = Date.now();
+
+	let randomEventEmbed = new Discord.MessageEmbed()
+	.setColor('#0EB533')
+	.setTitle("Random Event!")
+
 	switch(config.enabledEvents[Math.floor(Math.random() * config.enabledEvents.length)]) {
 
 		case "react":
-			channel.send("QUICK! PICK UP THE CANDY!!!").then(sentMsg => {
+
+			randomEventEmbed.setDescription("QUICK! PICK UP THE CANDY!!!")
+			.setImage("https://media1.tenor.com/images/9e9cde402d3774bf59b4627219ed7c0c/tenor.gif")
+
+			channel.send(randomEventEmbed).then(sentMsg => {
 				startEvent({type: "react", startTime: time, id: sentMsg.id, data: ["🍬", "🍫", "🍭", "🍪"]});
 				sentMsg.react("🍬");
 				sentMsg.react("🍫");
