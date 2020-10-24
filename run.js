@@ -108,13 +108,13 @@ client.once("disconnect", () => {
 
 client.login(process.env.discordtoken);
 
-/*function keywordHandler(message) {
+function keywordHandler(message) {
 	let keyword = message.content.trim().toLowerCase();
 	let eventLookup = [];
 	switch(keyword) {
 		case "trick":
 		case "treat":
-			eventLookup = eventsNow().filter(events => events.type == "witch" && events.channelId == message.channel.id);
+			eventLookup = currentEvents().filter(events => events.type == "witch" && events.channelId == message.channel.id);
 			for(let witchEvent of eventLookup) {
 				if(witchEvent.data.includes(message.author.id)) continue;
 
@@ -135,7 +135,7 @@ client.login(process.env.discordtoken);
 		break;
 		case "approach":
 		case "run":
-			eventLookup = eventsNow().filter(events => events.type == "mystic" && events.channelId == message.channel.id);
+			eventLookup = currentEvents().filter(events => events.type == "mystic" && events.channelId == message.channel.id);
 			for(let mysticEvent of eventLookup) {
 				if(mysticEvent.data.includes(message.author.id)) continue;
 
@@ -158,7 +158,7 @@ client.login(process.env.discordtoken);
 			}
 		break;
 	}
-}*/
+}
 
 //For randomEvents.js
 client.on('messageReactionAdd', (reaction, user) => {
@@ -174,7 +174,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 			eventLookup.data.splice(index, 1);
 			badDatabase.get(user.id).balance += 10;
 			reaction.message.edit(`${reaction.message.content}\n${user.username}#${user.discriminator} got 10 ${reaction.emoji.name}`);
-			clearEvents(eventLookup.id);
+			if(eventLookup.data.length == 0) clearEvents(eventLookup.id);
 		break;
 	}
 });
