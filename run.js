@@ -97,11 +97,16 @@ client.on('message', async msg => {
 
 		case "knock":
 			if(/^<@!\d+>$/.test(cmd.parsed[0])) {
-				let userToTrick = cmd.parsed[0].match(/(?<=^<@!)\d+(?=>$)/)[0];
-				badDatabase.get(userToTrick).trick += 1;
-				msg.channel.send(`You visited ${cmd.parsed[0]} house while you were trick o' treating`);
-			}
-			else msg.channel.send(`Hmm, I can't find ${cmd.parsed[0]}'s address...`);
+				if(Math.random() < 0.20) {
+				senderData.balance += 7;
+				${cmd.parsed[0]}.balance -= 7;
+				msg.channel.send("You knocked on ${cmd.parsed[0]}'s door but they weren't home. However there was candy outside it said to take ONE but you took 7 pieces. Don't be so greedy there won't be candy left for anyone else!");
+				} else if (Math.random() < 0.8) {
+				senderData.balance += 2;
+				${cmd.parsed[0]}.balance -= 2;
+				msg.channel.send("You knocked on ${cmd.parsed[0]}'s door and they opened the door and gave you two piece of candy");
+				} else {
+  				msg.channel.send("You knocked on ${cmd.parsed[0]}'s door there was no response and the candy bucket outside is all empty.")
 		break;
 
 		case "trickotreat":
@@ -143,7 +148,7 @@ client.on('message', async msg => {
 
 	}
 	randomEvent(msg.channel);
-});
+};
 
 
 function keywordHandler(msg) {
