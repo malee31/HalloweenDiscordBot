@@ -53,8 +53,9 @@ client.on('message', async message => {
 		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
 
 		if(now < expirationTime) {
-			const timeLeft = (expirationTime - now) / 1000;
-			return message.reply(`please wait ${timeLeft.toFixed(1)} more second${timeLeft.toFixed(1) == 1 ? '' : 's'} before reusing the \`${command.name}\` command.`);
+			const timeLeft = ((expirationTime - now) / 1000).toFixed(1);
+			if(typeof command.cooldownMessage == "function") return command.cooldownMessage(message, timeLeft);
+			return message.reply(`Please wait ${timeLeft} more second${timeLeft == 1 ? '' : 's'} before reusing the \`${command.name}\` command.`);
 		}
 	}
 
@@ -73,50 +74,34 @@ client.on('message', async message => {
 		cooldowns.set(command.name, new Discord.Collection());
 	}*/
 
-	/*let senderData = badDatabase.get(msg.author.id);
+	/*let senderData = badDatabase.get(message.author.id);
 	let remainingCooldown = 0;
 
 	switch(cmdParsed.command) {
 
 		case "forcestartevent":
-			if(msg.member.hasPermission("ADMINISTRATOR")) {
-				forceStartEvent(msg.channel);
+			if(message.member.hasPermission("ADMINISTRATOR")) {
+				forceStartEvent(message.channel);
 			}
 		break;
 
 		case "currentevents":
-			msg.channel.send(JSON.stringify(eventsNow()));
-		break;
-
-		case "greet":
-			msg.author.send("Have a SPOOKY👻 Halloween!");
-		break;
-
-		case "pass": 
-			remainingCooldown = cooldown("pass", senderData);
-			if(remainingCooldown !== -1) {
-				msg.channel.send(`If you take all the candy, your mom will get mad!\nCooldown: ${remainingCooldown}`);
-				return;
-			}
-
-			let pass = Math.floor(Math.random() * 31) + 25;
-			senderData.balance += pass;
-			msg.channel.send(`Your mom gave out candy and had ${pass} candies left over for you\nHere, you can take it!`);
+			message.channel.send(JSON.stringify(eventsNow()));
 		break;
 
 		case "boo":
 			remainingCooldown = cooldown("boo", senderData);
 			if(remainingCooldown !== -1) {
-				msg.channel.send(`All the kids have already been scared off. Now to wait...\nCooldown: ${remainingCooldown}`);
+				message.channel.send(`All the kids have already been scared off. Now to wait...\nCooldown: ${remainingCooldown}`);
 				return;
 			}
 
 			if(Math.random() < 0.5) {
 				senderData.balance += 3;
-				msg.channel.send("You scared the poor kid and they dropped 3 candies you ugly bastard!");
+				message.channel.send("You scared the poor kid and they dropped 3 candies you ugly bastard!");
 			} else {
 				senderData.balance -= 3;
-				msg.channel.send("You tried to scare the kid but they jumped you and stole your candy! -3 candies");
+				message.channel.send("You tried to scare the kid but they jumped you and stole your candy! -3 candies");
 			}
 		break;
 
@@ -127,13 +112,13 @@ client.on('message', async message => {
 			.setColor('#FF7518')
 			.setTitle("Top Trick o' Treaters")
 			.setDescription("It's a race to the top")
-			.setThumbnail(msg.guild.iconURL({dynamic: true}))
+			.setThumbnail(message.guild.iconURL({dynamic: true}))
 			.setImage("https://media1.tenor.com/images/cbe3dc34cec7df2df230e064fc173d39/tenor.gif")
 			.setFooter('🕸️ Get to the top before Spooky Season ends 🕸️');
 
 			let previous;
 			let index = 0;
-			let lead = msg.guild.members.cache.filter(member => {
+			let lead = message.guild.members.cache.filter(member => {
 				return typeof allUsers[member.user.id] !== "undefined";
 			}).sort((a, b) => {
 				return allUsers[b.user.id].balance - allUsers[a.user.id].balance;
@@ -145,56 +130,56 @@ client.on('message', async message => {
 				index++;
 			});
 		
-			msg.channel.send(leaderboardEmbed);
+			message.channel.send(leaderboardEmbed);
 		break;
 
 		case "bag":
-			msg.channel.send(`You have ${senderData.balance} candies in your Trick o' Treat bag`);
+			message.channel.send(`You have ${senderData.balance} candies in your Trick o' Treat bag`);
 		break;
 
 		case "pulse":
-			msg.channel.send("I'm still alive. \nBut you won't be for long.");
+			message.channel.send("I'm still alive. \nBut you won't be for long.");
 		break;
 
 		case "knock":
 			if(/^<@!\d+>$/.test(cmd.parsed[0])) {
 				let userToTrick = cmd.parsed[0].match(/(?<=^<@!)\d+(?=>$)/)[0];
 				badDatabase.get(userToTrick).trick += 1;
-				msg.channel.send(`You visited ${cmd.parsed[0]} house while you were trick o' treating`);
+				message.channel.send(`You visited ${cmd.parsed[0]} house while you were trick o' treating`);
 			}
-			else msg.channel.send(`Hmm, I can't find ${cmd.parsed[0]}'s address...`);
+			else message.channel.send(`Hmm, I can't find ${cmd.parsed[0]}'s address...`);
 		break;
 
 		case "trickotreat":
 			remainingCooldown = cooldown("trickotreat", senderData);
 			if(remainingCooldown !== -1) {
-				msg.channel.send(`"Walk to the next house! Stop running or we're never trick o' treating again!"\n-Your Mom\nCooldown: ${remainingCooldown}`);
+				message.channel.send(`"Walk to the next house! Stop running or we're never trick o' treating again!"\n-Your Mom\nCooldown: ${remainingCooldown}`);
 				return;
 			}
 
 			let chance = Math.random();
 			if(chance < 0.1) {
 				senderData.balance += 20;
-				msg.channel.send("OHHH! This is a rich neighborhood! +20 candies");
+				message.channel.send("OHHH! This is a rich neighborhood! +20 candies");
 			} else if(chance < 0.25) {
 				senderData.balance -= 10;
-				msg.channel.send("You got beat up by the kid in a full Batman costume. Ugh, rich kids. -10 candies");
+				message.channel.send("You got beat up by the kid in a full Batman costume. Ugh, rich kids. -10 candies");
 			} else if(chance < 0.35) {
-				msg.channel.send("Licorice and Bottle Caps don't qualify as candy. +0 candy");
+				message.channel.send("Licorice and Bottle Caps don't qualify as candy. +0 candy");
 			} else if(chance < 0.45) {
 				senderData.balance += 1;
-				msg.channel.send("\"Take One.\" Cheapskate. +1 candy");
+				message.channel.send("\"Take One.\" Cheapskate. +1 candy");
 			} else if(chance < 0.70) {
 				senderData.balance += 5;
-				msg.channel.send("\"That's a nice costume you've got, dear. Here you go, Happy Halloween.\" +5 candies");
+				message.channel.send("\"That's a nice costume you've got, dear. Here you go, Happy Halloween.\" +5 candies");
 			} else {
-				msg.channel.send("No one answered the door");
+				message.channel.send("No one answered the door");
 			}
 		break;
 
 		case "shutdown":
-			console.log(`Shutdown requested by: ${msg.author.username}#${msg.author.discriminator}`);
-			msg.reply("The Hallows shall rise again\nAnd when that happens, no one will be safe").then(() => {
+			console.log(`Shutdown requested by: ${message.author.username}#${message.author.discriminator}`);
+			message.reply("The Hallows shall rise again\nAnd when that happens, no one will be safe").then(() => {
 				process.exit();
 			});
 		break;
@@ -203,7 +188,7 @@ client.on('message', async message => {
 			return;
 
 	}
-	randomEvent(msg.channel);*/
+	randomEvent(message.channel);*/
 });
 
 /*const events = {
@@ -237,52 +222,52 @@ client.once("disconnect", () => {
 
 client.login(process.env.discordtoken);
 
-/*function keywordHandler(msg) {
-	let keyword = msg.content.trim().toLowerCase();
+/*function keywordHandler(message) {
+	let keyword = message.content.trim().toLowerCase();
 	let eventLookup = [];
 	switch(keyword) {
 		case "trick":
 		case "treat":
-			eventLookup = eventsNow().filter(events => events.type == "witch" && events.channelId == msg.channel.id);
+			eventLookup = eventsNow().filter(events => events.type == "witch" && events.channelId == message.channel.id);
 			for(let witchEvent of eventLookup) {
-				if(witchEvent.data.includes(msg.author.id)) continue;
+				if(witchEvent.data.includes(message.author.id)) continue;
 
-				witchEvent.data.push(msg.author.id);
-				let witchMsg = msg.channel.messages.cache.find(msg => msg.id == witchEvent.id);
+				witchEvent.data.push(message.author.id);
+				let witchMsg = message.channel.messages.cache.find(msg => msg.id == witchEvent.id);
 				if(keyword == "treat") {
 					if(Math.random() < 0.5){
-						badDatabase.get(msg.author.id).balance += 15;
-						witchMsg.edit(`${witchMsg.content}\n${msg.author.username}#${msg.author.discriminator} receives a mega bar! That's like 15 normal candy bars!`);
+						badDatabase.get(message.author.id).balance += 15;
+						witchMsg.edit(`${witchMsg.content}\n${message.author.username}#${message.author.discriminator} receives a mega bar! That's like 15 normal candy bars!`);
 					} else {
-						badDatabase.get(msg.author.id).balance -= 15;
-						witchMsg.edit(`${witchMsg.content}\n${msg.author.username}#${msg.author.discriminator} was nearly knocked out by the witch's broom. You dropped 15 candies while running away`);
+						badDatabase.get(message.author.id).balance -= 15;
+						witchMsg.edit(`${witchMsg.content}\n${message.author.username}#${message.author.discriminator} was nearly knocked out by the witch's broom. You dropped 15 candies while running away`);
 					}
 				} else {
-					witchMsg.edit(`${witchMsg.content}\n${msg.author.username}#${msg.author.discriminator} was too scared to visit the witch. They're missing out`);
+					witchMsg.edit(`${witchMsg.content}\n${message.author.username}#${message.author.discriminator} was too scared to visit the witch. They're missing out`);
 				}
 			}
 		break;
 		case "approach":
 		case "run":
-			eventLookup = eventsNow().filter(events => events.type == "mystic" && events.channelId == msg.channel.id);
+			eventLookup = eventsNow().filter(events => events.type == "mystic" && events.channelId == message.channel.id);
 			for(let mysticEvent of eventLookup) {
-				if(mysticEvent.data.includes(msg.author.id)) continue;
+				if(mysticEvent.data.includes(message.author.id)) continue;
 
-				mysticEvent.data.push(msg.author.id);
-				let mysticMsg = msg.channel.messages.cache.find(msg => msg.id == mysticEvent.id);
+				mysticEvent.data.push(message.author.id);
+				let mysticMsg = message.channel.messages.cache.find(msg => msg.id == mysticEvent.id);
 				if(keyword == "approach") {
 					let rand = Math.random();
 					if(rand < 0.5){
 						rand = Math.floor(rand * 50 - 20);
-						badDatabase.get(msg.author.id).balance += rand;
-						mysticMsg.edit(`🔮 The fortune teller vanishes, leaving ${rand} candies behind for ${mysticMsg.content}\n${msg.author.username}#${msg.author.discriminator}`);
+						badDatabase.get(message.author.id).balance += rand;
+						mysticMsg.edit(`🔮 The fortune teller vanishes, leaving ${rand} candies behind for ${mysticMsg.content}\n${message.author.username}#${message.author.discriminator}`);
 					} else {
-						badDatabase.get(msg.author.id).balance -= 50;
-						mysticMsg.edit(`${mysticMsg.content}\nThe spirits possess ${msg.author.username}#${msg.author.discriminator} and they briefly lose consciousness.\nWhen they woke up, the fortune teller was gone. Yet it feels as if the 50 candies weren't all that they lost`);
+						badDatabase.get(message.author.id).balance -= 50;
+						mysticMsg.edit(`${mysticMsg.content}\nThe spirits possess ${message.author.username}#${message.author.discriminator} and they briefly lose consciousness.\nWhen they woke up, the fortune teller was gone. Yet it feels as if the 50 candies weren't all that they lost`);
 					}
 				} else {
-					badDatabase.get(msg.author.id).balance += 3;
-					mysticMsg.edit(`${mysticMsg.content}\n${msg.author.username}#${msg.author.discriminator} ran away and found 3 candies.`);
+					badDatabase.get(message.author.id).balance += 3;
+					mysticMsg.edit(`${mysticMsg.content}\n${message.author.username}#${message.author.discriminator} ran away and found 3 candies.`);
 				}
 			}
 		break;
