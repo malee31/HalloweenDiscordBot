@@ -30,6 +30,7 @@ function forceStartEvent(channel) {
 			randomEventEmbed.setDescription("🍬🍫QUICK! PICK UP THE CANDY!!!🍭🍪")
 			.setColor('#f8ff38')
 			.setImage("https://media1.tenor.com/images/9e9cde402d3774bf59b4627219ed7c0c/tenor.gif")
+			.setFooter("");
 
 			channel.send(randomEventEmbed).then(sentMsg => {
 				startEvent({type: "react", startTime: time, id: sentMsg.id, data: ["🍬", "🍫", "🍭", "🍪"]});
@@ -43,7 +44,8 @@ function forceStartEvent(channel) {
 		case "witch":
 			randomEventEmbed.setDescription('There is a Witch in your neighborhood that is passing out KING SIZED candy bars.\nType \"treat\" to visit and \"trick\" to ignore.')
 		    .setColor('#0EB533')
-			.setImage("https://media1.tenor.com/images/bed062b6c8a55f6aa375f944aecd7918/tenor.gif");
+			.setImage("https://media1.tenor.com/images/bed062b6c8a55f6aa375f944aecd7918/tenor.gif")
+			.setFooter("");
 
 		    channel.send(randomEventEmbed).then(sentMsg => {
 				startEvent({type: "witch", startTime: time, channelId: sentMsg.channel.id, id: sentMsg.id, data: []});
@@ -54,8 +56,9 @@ function forceStartEvent(channel) {
 		case "mystic":
 			randomEventEmbed.setDescription('"Hey!" A mysterious fortune teller beckons you towards them\n"You poor innocent child, if you send the spirits an offering, they may do you a favor in return..."\nDo you dare approach her? (approach/run) <Cost: 15 candies>')
 			.setColor('#B13DFF')
-			.setImage("https://cdn.discordapp.com/attachments/768224531126026295/769704291228581888/giphy.gif");
-			
+			.setImage("https://cdn.discordapp.com/attachments/768224531126026295/769704291228581888/giphy.gif")
+			.setFooter("");
+
 			channel.send(randomEventEmbed).then(sentMsg => {
 				startEvent({type: "mystic", startTime: time, channelId: sentMsg.channel.id, id: sentMsg.id, data: []});
 			});

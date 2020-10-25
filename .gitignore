@@ -8,3 +8,6 @@ node_modules/
 # ViM Files
 *.swo
 *.swp
+
+# IntelliJ Files
+.idea/
