@@ -25,9 +25,7 @@ client.on('ready', () => {
 
 let lastEvent = 0;
 client.on('message', async message => {
-	if(!message.guild || (process.env.testingserver && message.guild.name !== process.env.testingserver)) return;
-	console.log("Guild: " + message.guild.name);
-	if(message.author.bot) return;
+	if(message.author.bot || !message.guild || (process.env.testingserver && message.guild.name !== process.env.testingserver)) return;
 	keywordHandler(message);
 	if(!message.content.startsWith(process.env.testprefix || config.prefix)) return;
 
@@ -83,27 +81,6 @@ client.on('message', async message => {
 	}
 });
 
-const events = {
-	MESSAGE_REACTION_ADD: 'messageReactionAdd',
-	MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
-};
-
-client.on('raw', async event => {
-	if (!events.hasOwnProperty(event.t)) return;
-
-	const { d: data } = event;
-	const user = client.users.cache.get(data.user_id);
-	const channel = client.channels.cache.get(data.channel_id);
-
-	if (channel.messages.cache.has(data.message_id)) return;
-
-	const message = await channel.messages.fetch(data.message_id);
-	const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-	const reaction = message.reactions.cache.get(emojiKey);
-
-	client.emit(events[event.t], reaction, user);
-});
-
 client.once("reconnecting", () => {
 	console.log("Reconnecting, whoops");
 });
@@ -118,29 +95,6 @@ function keywordHandler(message) {
 	let keyword = message.content.trim().toLowerCase();
 	let eventLookup = [];
 	switch(keyword) {
-		case "trick":
-		case "treat":
-			eventLookup = currentEvents().filter(events => events.type == "witch" && events.channelId == message.channel.id);
-			for(let witchEvent of eventLookup) {
-				if(witchEvent.data.includes(message.author.id)) continue;
-
-				witchEvent.data.push(message.author.id);
-				let witchMsg = message.channel.messages.cache.find(msg => msg.id == witchEvent.id);
-				let witchNewEmbed = new Discord.MessageEmbed(witchMsg.embeds[0]);
-				if(keyword == "treat") {
-					if(Math.random() < 0.5){
-						badDatabase.get(message.author.id).balance += 15;
-						witchNewEmbed.setFooter(`${witchNewEmbed.footer ? witchNewEmbed.footer.text : ""}\n${message.author.username}#${message.author.discriminator} receives a mega bar! That's like 15 normal candy bars!`);
-					} else {
-						badDatabase.get(message.author.id).balance -= 15;
-						witchNewEmbed.setFooter(`${witchNewEmbed.footer ? witchNewEmbed.footer.text : ""}\n${message.author.username}#${message.author.discriminator} was nearly knocked out by the witch's broom. You dropped 15 candies while running away`);
-					}
-				} else {
-					witchNewEmbed.setFooter(`${witchNewEmbed.footer ? witchNewEmbed.footer.text : ""}\n${message.author.username}#${message.author.discriminator} was too scared to visit the witch. They're missing out`);
-				}
-				witchMsg.edit(witchNewEmbed);
-			}
-		break;
 		case "approach":
 		case "run":
 			eventLookup = currentEvents().filter(events => events.type == "mystic" && events.channelId == message.channel.id);
