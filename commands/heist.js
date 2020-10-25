@@ -21,9 +21,10 @@ module.exports = {
 
 		let stealAmount = Number.parseInt(args[1]);
 
-		if(isNaN(stealAmount)) return message.channel.send("That's not a valid number of candies to give your friend!");
+		if(isNaN(stealAmount)) return message.channel.send("That's not a valid number of candies steal from friend!");
 		if(stealAmount <= 0) return message.channel.send("You're trying to gain candy, not lose it!");
 		if(dbThief.balance < stealAmount) return message.channel.send("You can't steal more than you have");
+		if(dbStealFrom.balance < stealAmount) return message.channel.send("They don't have that much to steal");
 		if(2 * dbThief.balance < dbStealFrom.balance) return message.channel.send("You'll lose more than you'll gain if you're caught.\nIt's not worth it");
 		stealAmount = Math.floor(stealAmount);
 
@@ -36,11 +37,11 @@ module.exports = {
 			message.channel.send(`${message.author.toString()} stole ${stealAmount} from ${args[0]} and lost ${loss} while running away`);
 		} else {
 			let fineRate = (dbThief.balance / (2 * dbStealFrom.balance));
-			let fine = fineRate * stealAmount;
+			let fine = Math.floor(fineRate * stealAmount);
 
-			dbThief -= fine;
+			dbThief.balance -= fine;
 
-			return message.channel.send(`${message.author.toString()} was fined ${fineRate.toFixed(1)}% after being caught stealing from ${args[0]}`);
+			return message.channel.send(`${message.author.toString()} was fined ${(fineRate * 100).toFixed(1)}% of what they tried to steal after being caught stealing from ${args[0]}`);
 		}
 	},
 };
