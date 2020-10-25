@@ -7,6 +7,11 @@ for(let key in data.users) {
 	if(data.users.hasOwnProperty(key)) {
 		data.users[key] = Object.assign({}, template, data.users[key]);
 	}
+	/*if(data.users[key].balance < 0) {
+		console.log(`Reset user from ${data.users[key].balance} to 0`);
+		data.users[key].balance = 0;
+		console.log(data.users[key].balance);
+	}*/
 }
 
 module.exports = {
