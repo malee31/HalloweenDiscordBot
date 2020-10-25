@@ -23,6 +23,7 @@ client.on('ready', () => {
 	client.user.setActivity("the SCREAMS of the Innocent", {type: "LISTENING"});
 });
 
+let lastEvent = 0;
 client.on('message', async message => {
 	if(!message.guild || (process.env.testingserver && message.guild.name !== process.env.testingserver)) return;
 	console.log("Guild: " + message.guild.name);
@@ -76,7 +77,10 @@ client.on('message', async message => {
 		message.reply('there was an error trying to execute that command!');
 	}
 
-	randomEvent(message.channel);
+	if(now < lastEvent + 60) {
+		randomEvent(message.channel);
+		lastEvent = now;
+	}
 });
 
 const events = {
