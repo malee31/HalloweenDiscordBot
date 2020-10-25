@@ -7,7 +7,6 @@ module.exports = {
 	usage: '<prefix>share <@Username> <amount>',
 	cooldown: 5,
 	execute(message, args) {
-		console.log(args[0]);
 		if(!/^<@!?\d+>$/.test(args[0])) return message.channel.send(`Hmm, the bot can't find your friend, ${args[0]}...`);
 
 		let loss = Math.random() * 0.05;

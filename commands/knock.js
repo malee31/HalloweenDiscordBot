@@ -4,7 +4,7 @@ module.exports = {
 	name: 'knock',
 	aliases: ["visit"],
 	description: 'Visit a friends house for candy. Results in them giving you some of their candy',
-	cooldown: 5,
+	cooldown: 10,
 	execute(message, args) {
 		let rand = Math.random();
 
@@ -14,12 +14,12 @@ module.exports = {
 		let userToTrick = badDatabase.get(args[0].match(/(?<=^<@!?)\d+(?=>$)/)[0]);
 		let exchange = 0;
 		let knockMsg = "";
-		if(rand < 0.8) {
-			exchange = 3;
-			knockMsg = `You knocked on ${args[0]}'s door and their mom made them give you 3 pieces of candy`;
+		if(rand < 0.9) {
+			exchange = 2;
+			knockMsg = `You knocked on ${args[0]}'s door and their mom made them give you 2 pieces of candy`;
 		} else {
-			exchange = 10;
-			knockMsg = `You knocked on ${args[0]}'s door but they weren't home.\nYou grabbed 10 pieces of candy from their Take One candy bucket!`;
+			exchange = 6;
+			knockMsg = `You knocked on ${args[0]}'s door but they weren't home.\nYou grabbed 6 pieces of candy from their Take One candy bucket!`;
 		}
 
 		badDatabase.get(message.author.id).balance += exchange;
