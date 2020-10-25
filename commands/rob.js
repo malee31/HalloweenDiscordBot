@@ -1,10 +1,10 @@
 const badDatabase = require("../parts/badDatabase.js");
 
 module.exports = {
-	name: 'heist',
-	aliases: ["steal", "rob", "snatch"],
+	name: 'rob',
+	aliases: ["steal", "heist", "snatch"],
 	description: 'The ultimate betrayal. Take all the good candy from your friend without getting caught!',
-	usage: '<prefix>heist <@Username> <amount>',
+	usage: '[@Username] [amount]',
 	cooldown: 36000,
 	execute(message, args) {
 		if(!/^<@!?\d+>$/.test(args[0])) return message.channel.send(`Hmm, the bot can't find your target, ${args[0]}...`);
@@ -25,7 +25,7 @@ module.exports = {
 		if(stealAmount <= 0) return message.channel.send("You're trying to gain candy, not lose it!");
 		if(dbThief.balance < stealAmount) return message.channel.send("You can't steal more than you have");
 		if(dbStealFrom.balance < stealAmount) return message.channel.send("They don't have that much to steal");
-		if(2 * dbThief.balance < dbStealFrom.balance) return message.channel.send("You'll lose more than you'll gain if you're caught.\nIt's not worth it");
+		if(dbThief.balance > 2 * dbStealFrom.balance) return message.channel.send("You'll lose more than you'll gain if you're caught.\nIt's not worth it");
 		stealAmount = Math.floor(stealAmount);
 
 		let chance = Math.random();
