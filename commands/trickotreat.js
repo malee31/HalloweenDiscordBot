@@ -2,7 +2,7 @@ const badDatabase = require("../parts/badDatabase.js");
 
 module.exports = {
 	name: 'trickotreat',
-	aliases: ["tricktreat", "trick/treat"],
+	aliases: ["trickortreat", "tricktreat", "trick/treat"],
 	description: 'Go Trick o\' Treating for candy',
 	cooldown: 10,
 	cooldownMessage(message, cooldown) {

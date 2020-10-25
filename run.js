@@ -150,7 +150,7 @@ function keywordHandler(message) {
 					let rand = Math.random();
 					if(rand < 0.5){
 						rand = Math.floor(rand * 21 + 10);
-						badDatabase.get(message.author.id).balance += rand;
+						badDatabase.get(message.author.id).balance += rand - 15;
 						mysticNewEmbed.setFooter(`${mysticNewEmbed.footer ? mysticNewEmbed.footer.text : ""}\n🔮 The fortune teller vanishes, leaving ${rand} candies behind for ${message.author.username}#${message.author.discriminator}`);
 					} else {
 						badDatabase.get(message.author.id).balance -= 15;

@@ -2,6 +2,7 @@ const badDatabase = require("../parts/badDatabase.js");
 
 module.exports = {
 	name: 'pass',
+	aliases: ['daily'],
 	description: 'Your mom passes out candy to the Trick o\' Treaters',
 	cooldown: 82800,
 	cooldownMessage(message, cooldown) {
