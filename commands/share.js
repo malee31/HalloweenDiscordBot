@@ -20,9 +20,11 @@ module.exports = {
 		loss = Math.floor(exchange * loss);
 		exchange = Math.floor(exchange - loss);
 
+		if(badDatabase.get(message.author.id).balance < (exchange + loss)) return message.channel.send("HEY! You don't have enough candy to give away!");
+
 		badDatabase.get(message.author.id).balance -= (exchange + loss);
 		badDatabase.get(giveTo).balance += exchange;
 
-		return message.channel.send(`${message.author.toString()} gave ${args[0]} ${exchange} candies and after eating ${loss} of the ${args[1]} he took out of his bag!\nHow generous!`);
+		return message.channel.send(`${message.author.toString()} gave ${args[0]} ${exchange} candies after eating ${loss} of the ${args[1]} he took out of his bag!\nHow generous!`);
 	},
 };
