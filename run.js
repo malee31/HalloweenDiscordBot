@@ -24,9 +24,11 @@ client.on('ready', () => {
 });
 
 client.on('message', async message => {
+	if(!message.guild || (process.env.testingserver && message.guild.name !== process.env.testingserver)) return;
+	console.log("Guild: " + message.guild.name);
 	if(message.author.bot) return;
 	keywordHandler(message);
-	if(!message.content.startsWith(config.prefix)) return;
+	if(!message.content.startsWith(process.env.testprefix || config.prefix)) return;
 
 	let {command, args} = cmdParse(message.content);
 	command = client.commands.get(command) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command));
@@ -120,17 +122,19 @@ function keywordHandler(message) {
 
 				witchEvent.data.push(message.author.id);
 				let witchMsg = message.channel.messages.cache.find(msg => msg.id == witchEvent.id);
+				let witchNewEmbed = new Discord.MessageEmbed(witchMsg.embeds[0]);
 				if(keyword == "treat") {
 					if(Math.random() < 0.5){
 						badDatabase.get(message.author.id).balance += 15;
-						witchMsg.edit(`${witchMsg.content}\n${message.author.username}#${message.author.discriminator} receives a mega bar! That's like 15 normal candy bars!`);
+						witchNewEmbed.setFooter(`${witchNewEmbed.footer ? witchNewEmbed.footer.text : ""}\n${message.author.username}#${message.author.discriminator} receives a mega bar! That's like 15 normal candy bars!`);
 					} else {
 						badDatabase.get(message.author.id).balance -= 15;
-						witchMsg.edit(`${witchMsg.content}\n${message.author.username}#${message.author.discriminator} was nearly knocked out by the witch's broom. You dropped 15 candies while running away`);
+						witchNewEmbed.setFooter(`${witchNewEmbed.footer ? witchNewEmbed.footer.text : ""}\n${message.author.username}#${message.author.discriminator} was nearly knocked out by the witch's broom. You dropped 15 candies while running away`);
 					}
 				} else {
-					witchMsg.edit(`${witchMsg.content}\n${message.author.username}#${message.author.discriminator} was too scared to visit the witch. They're missing out`);
+					witchNewEmbed.setFooter(`${witchNewEmbed.footer ? witchNewEmbed.footer.text : ""}\n${message.author.username}#${message.author.discriminator} was too scared to visit the witch. They're missing out`);
 				}
+				witchMsg.edit(witchNewEmbed);
 			}
 		break;
 		case "approach":
@@ -141,19 +145,21 @@ function keywordHandler(message) {
 
 				mysticEvent.data.push(message.author.id);
 				let mysticMsg = message.channel.messages.cache.find(msg => msg.id == mysticEvent.id);
+				let mysticNewEmbed = new Discord.MessageEmbed(mysticMsg.embeds[0]);
 				if(keyword == "approach") {
 					let rand = Math.random();
 					if(rand < 0.5){
 						rand = Math.floor(rand * 21 + 10);
 						badDatabase.get(message.author.id).balance += rand;
-						mysticMsg.edit(`${mysticMsg.content}\n🔮 The fortune teller vanishes, leaving ${rand} candies behind for ${message.author.username}#${message.author.discriminator}`);
+						mysticNewEmbed.setFooter(`${mysticNewEmbed.footer ? mysticNewEmbed.footer.text : ""}\n🔮 The fortune teller vanishes, leaving ${rand} candies behind for ${message.author.username}#${message.author.discriminator}`);
 					} else {
 						badDatabase.get(message.author.id).balance -= 15;
-						mysticMsg.edit(`${mysticMsg.content}\nThe spirits possess ${message.author.username}#${message.author.discriminator} and they briefly lose consciousness.\nWhen they woke up, the fortune teller was gone. Yet it feels as if the 15 candies weren't all that they lost`);
+						mysticNewEmbed.setFooter(`${mysticNewEmbed.footer ? mysticNewEmbed.footer.text : ""}\nThe fortune teller laughs and quickly vanishes, leaving ${message.author.username}#${message.author.discriminator} 15 candies poorer`);
 					}
 				} else {
-					mysticMsg.edit(`${mysticMsg.content}\n${message.author.username}#${message.author.discriminator} ran away safetly!`);
+					mysticNewEmbed.setFooter(`${mysticNewEmbed.footer ? mysticNewEmbed.footer.text : ""}\n${message.author.username}#${message.author.discriminator} ran away safetly!`);
 				}
+				mysticMsg.edit(mysticNewEmbed);
 			}
 		break;
 	}
@@ -172,7 +178,9 @@ client.on('messageReactionAdd', (reaction, user) => {
 			if(index == -1) return;
 			eventLookup.data.splice(index, 1);
 			badDatabase.get(user.id).balance += 10;
-			reaction.message.edit(`${reaction.message.content}\n${user.username}#${user.discriminator} got 10 ${reaction.emoji.name}`);
+			let reactionNewEmbed = new Discord.MessageEmbed(reaction.message.embeds[0]);
+			reactionNewEmbed.setFooter(`${reactionNewEmbed.footer ? reactionNewEmbed.footer.text : ""}\n${user.username}#${user.discriminator} got 10 ${reaction.emoji.name}`);
+			reaction.message.edit(reactionNewEmbed);
 			if(eventLookup.data.length == 0) clearEvents(eventLookup.id);
 		break;
 	}
