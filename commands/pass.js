@@ -4,7 +4,7 @@ module.exports = {
 	name: 'pass',
 	aliases: ['daily'],
 	description: 'Your mom passes out candy to the Trick o\' Treaters',
-	cooldown: 82800,
+	cooldown: 72000,
 	cooldownMessage(message, cooldown) {
 		return message.channel.send(`If you take all the candy, your mom will get mad!\nCooldown: ${cooldown}`);
 	},
