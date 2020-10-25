@@ -11,20 +11,20 @@ module.exports = {
 	execute(message) {
 		let senderData = badDatabase.get(message.author.id);
 		let chance = Math.random();
-		if(chance < 0.05) {
+		if(chance < 0.1) {
 			senderData.balance += 20;
 			message.channel.send("OHHH! This is a rich neighborhood! +20 candies");
 		} else if(chance < 0.25) {
 			senderData.balance -= 10;
 			message.channel.send("You got beat up by the kid in a full Batman costume. Ugh, rich kids. -10 candies");
-		} else if(chance < 0.35) {
-			message.channel.send("Licorice and Bottle Caps don't qualify as candy. +0 candy");
 		} else if(chance < 0.45) {
-			senderData.balance += 1;
-			message.channel.send("\"Take One.\" Cheapskate. +1 candy");
-		} else if(chance < 0.70) {
-			senderData.balance += 5;
-			message.channel.send("\"That's a nice costume you've got, dear. Here you go, Happy Halloween.\" +5 candies");
+			message.channel.send("Licorice and Bottle Caps don't qualify as candy. +0 candy");
+		} else if(chance < 0.60) {
+			senderData.balance += 2;
+			message.channel.send("\"Take One.\" Cheapskate. +2 candy");
+		} else if(chance < 0.85) {
+			senderData.balance += 8;
+			message.channel.send("\"That's a nice costume you've got, dear. Here you go, Happy Halloween.\" +8 candies");
 		} else {
 			message.channel.send("No one answered the door");
 		}
