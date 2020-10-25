@@ -3,10 +3,12 @@ const config = require("./config.json");
 const runningEvents = [];
 let eventTimer = setInterval(clearEvents, config.eventTimerSpeed);
 
+const reactevent = require("../randomEvents/reactevent.js");
+
 module.exports = {
-	randomEvent(channel) {
+	randomEvent(message) {
 		if(Math.floor(Math.random() * 100 + 1)  < config.eventBaseChance) {
-			forceStartEvent(channel);
+			forceStartEvent(message);
 		}
 	},
 	forceStartEvent: forceStartEvent,
@@ -17,7 +19,8 @@ module.exports = {
 	clearEvents
 };
 
-function forceStartEvent(channel) {
+function forceStartEvent(message) {
+	let channel = message.channel;
 	let time = Date.now();
 
 	let randomEventEmbed = new Discord.MessageEmbed()
@@ -26,19 +29,7 @@ function forceStartEvent(channel) {
 	switch(config.enabledEvents[Math.floor(Math.random() * config.enabledEvents.length)]) {
 
 		case "react":
-
-			randomEventEmbed.setDescription("🍬🍫QUICK! PICK UP THE CANDY!!!🍭🍪")
-			.setColor('#f8ff38')
-			.setImage("https://media1.tenor.com/images/9e9cde402d3774bf59b4627219ed7c0c/tenor.gif")
-			.setFooter("");
-
-			channel.send(randomEventEmbed).then(sentMsg => {
-				startEvent({type: "react", startTime: time, id: sentMsg.id, data: ["🍬", "🍫", "🍭", "🍪"]});
-				sentMsg.react("🍬");
-				sentMsg.react("🍫");
-				sentMsg.react("🍭");
-				sentMsg.react("🍪");
-			}).catch(console.error);
+			reactevent.execute(message);
 		break;
 
 		case "witch":

@@ -78,7 +78,7 @@ client.on('message', async message => {
 	}
 
 	if(now < lastEvent + 60) {
-		randomEvent(message.channel);
+		randomEvent(message);
 		lastEvent = now;
 	}
 });
@@ -168,28 +168,3 @@ function keywordHandler(message) {
 		break;
 	}
 }
-
-//For randomEvents.js
-client.on('messageReactionAdd', (reaction, user) => {
-	//console.log(`${user.username} reacted with "${reaction.emoji.name}".`);
-	clearEvents();
-	if(user.bot) return;
-	let eventLookup = currentEvents().find(events => events.id == reaction.message.id);
-	if(typeof eventLookup == "undefined") return;
-	switch(eventLookup.type) {
-		case "react":
-			let index = eventLookup.data.indexOf(reaction.emoji.name);
-			if(index == -1) return;
-			eventLookup.data.splice(index, 1);
-			badDatabase.get(user.id).balance += 10;
-			let reactionNewEmbed = new Discord.MessageEmbed(reaction.message.embeds[0]);
-			reactionNewEmbed.setFooter(`${reactionNewEmbed.footer ? reactionNewEmbed.footer.text : ""}\n${user.username}#${user.discriminator} got 10 ${reaction.emoji.name}`);
-			reaction.message.edit(reactionNewEmbed);
-			if(eventLookup.data.length == 0) clearEvents(eventLookup.id);
-		break;
-	}
-});
-
-client.on('messageReactionRemove', (reaction, user) => {
-	console.log(`${user.username} removed their "${reaction.emoji.name}" reaction.`);
-});

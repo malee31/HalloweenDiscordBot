@@ -1,6 +1,5 @@
 {
 	"dbSchema": {
-		"userID": "ExampleUser",
 		"balance": 0,
 		"trick": 0,
 		"cooldowns": {
@@ -9,14 +8,12 @@
 			"treatotreat": 0
 		}
 	},
-	"candyMultiplier": 2,
 	"cooldowns": {
 		"pass": 75600,
 		"boo": 420,
 		"trickotreat": 3600
 	},
 	"eventDurations": {
-		"react": 10,
 		"witch": 180,
 		"mystic": 180
 	},
