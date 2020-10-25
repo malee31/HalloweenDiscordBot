@@ -11,7 +11,7 @@ module.exports = {
 	execute(message) {
 		let senderData = badDatabase.get(message.author.id);
 		let chance = Math.random();
-		if(chance < 0.1) {
+		if(chance < 0.05) {
 			senderData.balance += 20;
 			message.channel.send("OHHH! This is a rich neighborhood! +20 candies");
 		} else if(chance < 0.25) {
