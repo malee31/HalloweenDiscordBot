@@ -2,6 +2,7 @@ require('dotenv').config();
 const fs = require("fs");
 const Discord = require("discord.js");
 const client = new Discord.Client();
+const config = require("./parts/config.json");
 const cmdParse = require("./parts/commandParse.js");
 const {randomEvent} = require("./parts/randomEvent.js");
 
