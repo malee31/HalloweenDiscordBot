@@ -3,6 +3,7 @@ const badDatabase = require("../parts/badDatabase.js");
 module.exports = {
 	name: 'pun',
 	description: 'Haha. Funny.',
+	cooldown: 1,
 	execute(message) {
 		let chance = Math.random();
 		let pun = "";

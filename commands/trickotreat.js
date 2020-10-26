@@ -4,7 +4,7 @@ module.exports = {
 	name: 'trickotreat',
 	aliases: ["trickortreat", "tricktreat", "trick/treat"],
 	description: 'Go Trick o\' Treating for candy',
-	cooldown: 900,
+	cooldown: 600,
 	cooldownMessage(message, cooldown) {
 		return message.channel.send(`"Walk to the next house! Stop running or we're never trick o' treating again!"\n-Your Mom\nCooldown: ${cooldown}`);
 	},

@@ -3,7 +3,7 @@ const badDatabase = require("../parts/badDatabase.js");
 module.exports = {
 	name: 'rob',
 	aliases: ["steal", "heist", "snatch"],
-	description: 'The ultimate betrayal. Take all the good candy from your friend without getting caught!\n`WARNING: You can lose up to how much you try to steal`',
+	description: 'The ultimate betrayal. Take all the good candy from your friend without getting caught!\n`WARNING: You can lose up to how much you try to steal\nFines calculated with (Amount you failed to steal) * ((Your balance) / ((Target\'s balance) * 2)) and caps at the amount you tried to steal.`',
 	usage: '[@Username] [amount]',
 	cooldown: 900,
 	validate(message, args) {
@@ -34,10 +34,10 @@ module.exports = {
 			message.channel.send("They don't have that much to steal");
 			return false;
 		}
-		if(dbThief.balance > 2 * dbStealFrom.balance) {
-			message.channel.send("You'll lose more than you'll gain if you're caught.\nIt's not worth it");
-			return false;
-		}
+		// if(dbThief.balance > 2 * dbStealFrom.balance) {
+		// 	message.channel.send("You'll lose more than you'll gain if you're caught.\nIt's not worth it");
+		// 	return false;
+		// }
 		args[1] = stealAmount;
 		return true;
 	},
@@ -56,7 +56,7 @@ module.exports = {
 			dbThief.balance += stealAmount - loss;
 			return message.channel.send(`${message.author.toString()} stole ${stealAmount} from ${args[0]} and lost ${loss} while running away`);
 		} else {
-			let fineRate = (dbThief.balance / (2 * dbStealFrom.balance));
+			let fineRate = Math.min(dbThief.balance / (2 * dbStealFrom.balance), 1);
 			let fine = Math.floor(fineRate * stealAmount);
 
 			dbThief.balance -= fine;

@@ -14,6 +14,7 @@ module.exports = {
 
 		return message.channel.send(randomEventEmbed).then(sentMsg => {
 			let validEmojis = ["🍬", "🍫", "🍭", "🍪"];
+			let footerText = "";
 			for(const emoji of validEmojis) {
 				sentMsg.react(emoji).catch(err => {
 					console.log(`Failed to react with ${emoji}. Check error bellow`);
@@ -32,7 +33,8 @@ module.exports = {
 
 				badDatabase.get(user.id).balance += 10;
 				let reactionNewEmbed = new Discord.MessageEmbed(reaction.message.embeds[0]);
-				reactionNewEmbed.setFooter(`${reactionNewEmbed.footer ? reactionNewEmbed.footer.text : ""}\n${user.username}#${user.discriminator} got 10 ${reaction.emoji.name}`);
+				footerText += `\n${user.username}#${user.discriminator} got 10 ${reaction.emoji.name}`;
+				reactionNewEmbed.setFooter(footerText);
 
 				if(validEmojis.length === 0) {
 					console.log("ALL CLAIMED");

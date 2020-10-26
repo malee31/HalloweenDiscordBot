@@ -10,17 +10,17 @@ module.exports = {
 			.setTitle("Random Event!")
 			.setDescription('There is a Witch in your neighborhood that is passing out KING SIZED candy bars.\nType \"treat\" to visit and \"trick\" to ignore.')
 			.setColor('#0EB533')
-			.setImage("https://media1.tenor.com/images/bed062b6c8a55f6aa375f944aecd7918/tenor.gif")
-			.setFooter("");
+			.setImage("https://media1.tenor.com/images/bed062b6c8a55f6aa375f944aecd7918/tenor.gif");
 
 		return message.channel.send(randomEventEmbed).then(sentMsg => {
 			let validResponses = ["trick", "treat"];
 
-			const messageCollector = sentMsg.channel.createMessageCollector((msg, user) => {
-				return !user.bot && validResponses.includes(msg.content.toLowerCase());
-			}, {max: 20, maxUsers: 10, time: 10000});
-
 			let completed = [];
+			let footerText = "";
+
+			const messageCollector = sentMsg.channel.createMessageCollector(msg => {
+				return !msg.author.bot && validResponses.includes(msg.content.toLowerCase()) && !completed.includes(msg.author.id);
+			}, {max: 20, maxUsers: 10, time: 10000});
 
 			messageCollector.on("collect", (msg) => {
 				if(completed.includes(msg.author.id)) return;
@@ -30,14 +30,15 @@ module.exports = {
 				if(msg.content.toLowerCase() === "treat") {
 					if(Math.random() < 0.5){
 						badDatabase.get(msg.author.id).balance += 15;
-						witchNewEmbed.setFooter(`${witchNewEmbed.footer ? witchNewEmbed.footer.text : ""}\n${msg.author.username}#${msg.author.discriminator} receives a mega bar! That's like 15 normal candy bars!`);
+						footerText += `\n${msg.author.username}#${msg.author.discriminator} receives a mega bar! That's like 15 normal candy bars!`;
 					} else {
 						badDatabase.get(msg.author.id).balance -= 15;
-						witchNewEmbed.setFooter(`${witchNewEmbed.footer ? witchNewEmbed.footer.text : ""}\n${message.author.username}#${msg.author.discriminator} was nearly knocked out by the witch's broom. You dropped 15 candies while running away`);
+						footerText += `\n${message.author.username}#${msg.author.discriminator} was nearly knocked out by the witch's broom. You dropped 15 candies while running away`;
 					}
 				} else {
-					witchNewEmbed.setFooter(`${witchNewEmbed.footer ? witchNewEmbed.footer.text : ""}\n${msg.author.username}#${msg.author.discriminator} was too scared to visit the witch. They're missing out`);
+					footerText += `\n${msg.author.username}#${msg.author.discriminator} was too scared to visit the witch. They're missing out`;
 				}
+				witchNewEmbed.setFooter(footerText);
 				sentMsg.edit(witchNewEmbed);
 			});
 		}).catch(console.error);
