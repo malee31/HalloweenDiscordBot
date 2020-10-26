@@ -24,7 +24,8 @@ module.exports = {
 			messageCollector.on("collect", msg => {
 				if(completed.includes(msg.author.id)) return;
 				console.log(`Pushed: ${msg.author.id}`);
-				console.log(msg);
+				console.log(msg.id);
+				console.log(msg.author.username);
 				completed.push(msg.author.id);
 
 				let testNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
