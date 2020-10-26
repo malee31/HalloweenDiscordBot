@@ -56,9 +56,25 @@ client.on('message', async message => {
 		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
 
 		if(now < expirationTime) {
-			const timeLeft = ((expirationTime - now) / 1000).toFixed(1);
+			let timeLeft = ((expirationTime - now) / 1000);
+			let units = "seconds";
+
+			console.log(timeLeft);
+
+			if(timeLeft / 3600 >= 1) {
+				timeLeft = timeLeft / 3600;
+				units = timeLeft === 1 ? "hour" : "hours";
+			} else if (timeLeft / 60 >= 1) {
+				timeLeft = timeLeft / 60;
+				units = timeLeft === 1 ? "minute" : "minutes";
+			} else if(timeLeft === 1) {
+				units = "second";
+			}
+
+			timeLeft = `${timeLeft.toFixed(1)} ${units}`;
+
 			if(typeof command.cooldownMessage == "function") return command.cooldownMessage(message, timeLeft);
-			return message.reply(`Please wait ${timeLeft} more second${timeLeft == 1 ? '' : 's'} before reusing the \`${command.name}\` command.`);
+			return message.reply(`Please wait ${timeLeft} before reusing the \`${command.name}\` command.`);
 		}
 	}
 

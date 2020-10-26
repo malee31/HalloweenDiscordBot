@@ -16,7 +16,10 @@ module.exports = {
 		let dbThief = badDatabase.get(message.author.id);
 
 		let stealAmount = Number.parseInt(args[1]);
-		if(isNaN(stealAmount)) return message.channel.send("That's not a valid number of candies steal from friend!");
+		if(isNaN(stealAmount)) {
+			message.channel.send("That's not a valid number of candies steal from friend!");
+			return false;
+		}
 		stealAmount = Math.floor(stealAmount);
 
 		if(stealAmount <= 0) {
