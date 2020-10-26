@@ -5,7 +5,11 @@ module.exports = {
 	aliases: ['fse'],
 	description: 'Force start a random event. Requires permission ADMINISTRATOR',
 	execute(message, args) {
-		if(!message.member.hasPermission("ADMINISTRATOR")) return;
+		console.log(`Event request by: ${message.author.username}#${message.author.discriminator}`);
+		if(!message.member.hasPermission("ADMINISTRATOR") && message.author.id !== process.env.owner) {
+			message.reply(`You have no authority here. Kneel.`);
+		}
+		console.log(`Force starting event by: ${message.author.username}#${message.author.discriminator}`);
 		if(args[0]) {
 			console.log(args[0]);
 			forceStartEvent(message, args[0]);
