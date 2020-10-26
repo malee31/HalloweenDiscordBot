@@ -3,7 +3,7 @@ const fs = require("fs");
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = require("./parts/config.json");
-const argFormat = require("./parts/format.js");
+// const argFormat = require("./parts/format.js");
 const cmdParse = require("./parts/commandParse.js");
 const {randomEvent} = require("./parts/randomEvent.js");
 
