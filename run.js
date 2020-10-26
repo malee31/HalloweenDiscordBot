@@ -71,7 +71,7 @@ client.on('message', async message => {
 
 		command.execute(message, args);
 
-		if(now < lastEvent + 60) {
+		if(now < lastEvent + 2) {
 			randomEvent(message);
 			lastEvent = now;
 		}
