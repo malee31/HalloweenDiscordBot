@@ -3,9 +3,9 @@ const badDatabase = require("../parts/badDatabase.js");
 module.exports = {
 	name: 'rob',
 	aliases: ["steal", "heist", "snatch"],
-	description: 'The ultimate betrayal. Take all the good candy from your friend without getting caught!',
+	description: 'The ultimate betrayal. Take all the good candy from your friend without getting caught!\n`WARNING: You can lose up to how much you try to steal`',
 	usage: '[@Username] [amount]',
-	cooldown: 1800,
+	cooldown: 900,
 	validate(message, args) {
 		if(!/^<@!?\d+>$/.test(args[0])) {
 			message.channel.send(`Hmm, the bot can't find your target, ${args[0]}...`);
@@ -27,7 +27,7 @@ module.exports = {
 			return false;
 		}
 		if(dbThief.balance < stealAmount) {
-			message.channel.send("You can't steal more than you have");
+			message.channel.send("You can't steal more than what you have");
 			return false;
 		}
 		if(dbStealFrom.balance < stealAmount){
@@ -47,20 +47,21 @@ module.exports = {
 
 		let stealAmount = args[1];
 
-		let chance = Math.random();
+		let chance = Math.floor(Math.random() * 101 + 1);
+		console.log(chance);
 
-		if(chance < 0.1) {
-			let loss = Math.floor(chance * stealAmount);
+		if(chance >= 30 && chance <= 60) {
+			let loss = Math.floor((chance - 30) / 100 * stealAmount);
 			dbStealFrom.balance -= stealAmount;
 			dbThief.balance += stealAmount - loss;
-			message.channel.send(`${message.author.toString()} stole ${stealAmount} from ${args[0]} and lost ${loss} while running away`);
+			return message.channel.send(`${message.author.toString()} stole ${stealAmount} from ${args[0]} and lost ${loss} while running away`);
 		} else {
 			let fineRate = (dbThief.balance / (2 * dbStealFrom.balance));
 			let fine = Math.floor(fineRate * stealAmount);
 
 			dbThief.balance -= fine;
 
-			return message.channel.send(`${message.author.toString()} was fined ${(fineRate * 100).toFixed(1)}% of what they tried to steal after being caught stealing from ${args[0]}`);
+			return message.channel.send(`${message.author.toString()} was fined ${fine} candies (${(fineRate * 100).toFixed(1)}% of what they tried to steal) after being caught stealing from ${args[0]}`);
 		}
 	},
 };
