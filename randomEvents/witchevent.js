@@ -17,7 +17,7 @@ module.exports = {
 			let validResponses = ["trick", "treat"];
 
 			const messageCollector = sentMsg.channel.createMessageCollector((msg, user) => {
-				return !user.bot && validResponses.includes(msg.content);
+				return !user.bot && validResponses.includes(msg.content.toLowerCase());
 			}, {max: 20, maxUsers: 10, time: 10000});
 
 			let completed = [];
@@ -27,7 +27,7 @@ module.exports = {
 				completed.push(msg.author.id);
 
 				let witchNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
-				if(msg.content === "treat") {
+				if(msg.content.toLowerCase() === "treat") {
 					if(Math.random() < 0.5){
 						badDatabase.get(msg.author.id).balance += 15;
 						witchNewEmbed.setFooter(`${witchNewEmbed.footer ? witchNewEmbed.footer.text : ""}\n${msg.author.username}#${msg.author.discriminator} receives a mega bar! That's like 15 normal candy bars!`);

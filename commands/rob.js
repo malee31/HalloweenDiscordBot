@@ -5,7 +5,7 @@ module.exports = {
 	aliases: ["steal", "heist", "snatch"],
 	description: 'The ultimate betrayal. Take all the good candy from your friend without getting caught!',
 	usage: '[@Username] [amount]',
-	cooldown: 3600,
+	cooldown: 1800,
 	validate(message, args) {
 		if(!/^<@!?\d+>$/.test(args[0])) {
 			message.channel.send(`Hmm, the bot can't find your target, ${args[0]}...`);

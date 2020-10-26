@@ -16,7 +16,7 @@ module.exports = {
 			let validResponses = ["approach", "run"];
 
 			const messageCollector = sentMsg.channel.createMessageCollector((msg, user) => {
-				return !user.bot && validResponses.includes(msg.content);
+				return !user.bot && validResponses.includes(msg.content.toLowerCase());
 			}, {max: 20, maxUsers: 10, time: 10000});
 
 			let completed = [];
@@ -26,7 +26,7 @@ module.exports = {
 				completed.push(msg.author.id);
 
 				let mysticNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
-				if(msg.content === "approach") {
+				if(msg.content.toLowerCase() === "approach") {
 					let rand = Math.random();
 					if(rand < 0.5){
 						rand = Math.floor(rand * 21 + 10);
