@@ -62,20 +62,22 @@ client.on('message', async message => {
 		}
 	}
 
-	timestamps.set(message.author.id, now);
-	//TODO: See if there is a way to remove this timeout
-	setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-
 	try {
+		if(typeof command.validate === "function" && !command.validate(message, args)) return;
+
+		timestamps.set(message.author.id, now);
+		//TODO: See if there is a way to remove this timeout
+		setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+
 		command.execute(message, args);
+
+		if(now < lastEvent + 60) {
+			randomEvent(message);
+			lastEvent = now;
+		}
 	} catch (error) {
 		console.error(error);
 		message.reply('there was an error trying to execute that command!');
-	}
-
-	if(now < lastEvent + 60) {
-		randomEvent(message);
-		lastEvent = now;
 	}
 });
 

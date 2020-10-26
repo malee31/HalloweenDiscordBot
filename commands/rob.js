@@ -6,27 +6,43 @@ module.exports = {
 	description: 'The ultimate betrayal. Take all the good candy from your friend without getting caught!',
 	usage: '[@Username] [amount]',
 	cooldown: 36000,
-	execute(message, args) {
-		if(!/^<@!?\d+>$/.test(args[0])) return message.channel.send(`Hmm, the bot can't find your target, ${args[0]}...`);
+	validate(message, args) {
+		if(!/^<@!?\d+>$/.test(args[0])) {
+			message.channel.send(`Hmm, the bot can't find your target, ${args[0]}...`);
+			return false;
+		}
 
-		/*Risk: Corresponding percentage of your money
-		* Limit: Cooldown
-		* */
-
-		let stealFrom = args[0].match(/(?<=^<@!?)\d+(?=>$)/)[0];
-		let thief = message.author.id;
-
-		let dbStealFrom = badDatabase.get(stealFrom);
-		let dbThief = badDatabase.get(thief);
+		let dbStealFrom = badDatabase.get(args[0].match(/(?<=^<@!?)\d+(?=>$)/)[0]);
+		let dbThief = badDatabase.get(message.author.id);
 
 		let stealAmount = Number.parseInt(args[1]);
-
 		if(isNaN(stealAmount)) return message.channel.send("That's not a valid number of candies steal from friend!");
-		if(stealAmount <= 0) return message.channel.send("You're trying to gain candy, not lose it!");
-		if(dbThief.balance < stealAmount) return message.channel.send("You can't steal more than you have");
-		if(dbStealFrom.balance < stealAmount) return message.channel.send("They don't have that much to steal");
-		if(dbThief.balance > 2 * dbStealFrom.balance) return message.channel.send("You'll lose more than you'll gain if you're caught.\nIt's not worth it");
 		stealAmount = Math.floor(stealAmount);
+
+		if(stealAmount <= 0) {
+			message.channel.send("You're trying to gain candy, not lose it!");
+			return false;
+		}
+		if(dbThief.balance < stealAmount) {
+			message.channel.send("You can't steal more than you have");
+			return false;
+		}
+		if(dbStealFrom.balance < stealAmount){
+			message.channel.send("They don't have that much to steal");
+			return false;
+		}
+		if(dbThief.balance > 2 * dbStealFrom.balance) {
+			message.channel.send("You'll lose more than you'll gain if you're caught.\nIt's not worth it");
+			return false;
+		}
+		args[1] = stealAmount;
+		return true;
+	},
+	execute(message, args) {
+		let dbStealFrom = badDatabase.get(args[0].match(/(?<=^<@!?)\d+(?=>$)/)[0]);
+		let dbThief = badDatabase.get(message.author.id);
+
+		let stealAmount = args[1];
 
 		let chance = Math.random();
 
