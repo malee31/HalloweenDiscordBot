@@ -23,6 +23,8 @@ module.exports = {
 			}
 
 			const reactCollector = sentMsg.createReactionCollector((reaction, user) => {
+				console.log("Reaction: ");
+				console.log(reaction);
 				return !user.bot && validEmojis.includes(reaction.emoji.name);
 			}, {max: 20, maxEmojis: 20, maxUsers: 10, time: 10000});
 

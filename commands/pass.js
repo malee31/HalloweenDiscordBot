@@ -3,7 +3,7 @@ const badDatabase = require("../parts/badDatabase.js");
 module.exports = {
 	name: 'pass',
 	description: 'Your mom passes out candy to the Trick o\' Treaters',
-	cooldown: 180,
+	cooldown: 1800,
 	cooldownMessage(message, cooldown) {
 		return message.channel.send(`If you take all the candy, your mom will get mad!\nCooldown: ${cooldown}`);
 	},
