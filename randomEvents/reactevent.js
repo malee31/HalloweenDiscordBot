@@ -37,7 +37,7 @@ module.exports = {
 				reactionNewEmbed.setFooter(footerText);
 
 				if(validEmojis.length === 0) {
-					console.log("ALL CLAIMED");
+					// console.log("ALL CLAIMED");
 					reactCollector.stop("All candy claimed");
 				}
 

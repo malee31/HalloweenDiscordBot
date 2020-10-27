@@ -48,7 +48,6 @@ module.exports = {
 		let stealAmount = args[1];
 
 		let chance = Math.floor(Math.random() * 101 + 1);
-		console.log(chance);
 
 		if(chance >= 30 && chance <= 60) {
 			let loss = Math.floor((chance - 30) / 100 * stealAmount);

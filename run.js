@@ -58,8 +58,6 @@ client.on('message', async message => {
 			let timeLeft = ((expirationTime - now) / 1000);
 			let units = "seconds";
 
-			console.log(timeLeft);
-
 			if(timeLeft / 3600 >= 1) {
 				timeLeft = timeLeft / 3600;
 				units = timeLeft === 1 ? "hour" : "hours";

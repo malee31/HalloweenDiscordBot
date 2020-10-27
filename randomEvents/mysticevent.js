@@ -21,7 +21,7 @@ module.exports = {
 				return !msg.author.bot && validResponses.includes(msg.content.toLowerCase()) && !completed.includes(msg.author.id);
 			}, {max: 20, maxUsers: 10, time: 10000});
 
-			messageCollector.on("collect", (msg) => {
+			messageCollector.on("collect", msg => {
 				if(completed.includes(msg.author.id)) return;
 				completed.push(msg.author.id);
 
@@ -30,14 +30,14 @@ module.exports = {
 					let rand = Math.random();
 					if(rand < 0.5){
 						rand = Math.floor(rand * 21 + 10);
-						badDatabase.get(message.author.id).balance += rand - 15;
-						footerText += `\n🔮 The fortune teller vanishes, leaving ${rand} candies behind for ${message.author.username}#${message.author.discriminator}`;
+						badDatabase.get(msg.author.id).balance += rand - 15;
+						footerText += `\n🔮 The fortune teller vanishes, leaving ${rand} candies behind for ${msg.author.username}#${msg.author.discriminator}`;
 					} else {
-						badDatabase.get(message.author.id).balance -= 15;
-						footerText += `\nThe fortune teller laughs and quickly vanishes, leaving ${message.author.username}#${message.author.discriminator} 15 candies poorer`;
+						badDatabase.get(msg.author.id).balance -= 15;
+						footerText += `\nThe fortune teller laughs and quickly vanishes, leaving ${msg.author.username}#${msg.author.discriminator} 15 candies poorer`;
 					}
 				} else {
-					footerText += `\n${message.author.username}#${message.author.discriminator} ran away safetly!`;
+					footerText += `\n${msg.author.username}#${msg.author.discriminator} ran away safetly!`;
 				}
 				mysticNewEmbed.setFooter(footerText);
 				sentMsg.edit(mysticNewEmbed);

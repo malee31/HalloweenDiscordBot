@@ -37,10 +37,10 @@ function get(userID) {
 		return;
 	}
 	if(typeof data.users[userID] == "object") {
-		console.log("They exist. Sending saved data");
+		// console.log("They exist. Sending saved data");
 		return data.users[userID];
 	} else if(typeof userID == "undefined") {
-		console.log("No user specified. Sending all user data");
+		// console.log("No user specified. Sending all user data");
 		return data.users;
 	} else {
 		console.log("Making new user");

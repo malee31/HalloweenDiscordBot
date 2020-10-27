@@ -11,7 +11,7 @@ module.exports = {
 		}
 		console.log(`Force starting event by: ${message.author.username}#${message.author.discriminator}`);
 		if(args[0]) {
-			console.log(args[0]);
+			console.log(`Force started event: ${args[0]}`);
 			forceStartEvent(message, args[0]);
 			return;
 		}

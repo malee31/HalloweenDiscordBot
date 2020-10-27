@@ -33,7 +33,7 @@ module.exports = {
 						footerText += `\n${msg.author.username}#${msg.author.discriminator} receives a mega bar! That's like 15 normal candy bars!`;
 					} else {
 						badDatabase.get(msg.author.id).balance -= 15;
-						footerText += `\n${message.author.username}#${msg.author.discriminator} was nearly knocked out by the witch's broom. You dropped 15 candies while running away`;
+						footerText += `\n${msg.author.username}#${msg.author.discriminator} was nearly knocked out by the witch's broom. You dropped 15 candies while running away`;
 					}
 				} else {
 					footerText += `\n${msg.author.username}#${msg.author.discriminator} was too scared to visit the witch. They're missing out`;
