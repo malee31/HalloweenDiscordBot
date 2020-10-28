@@ -5,10 +5,16 @@ module.exports = {
 	aliases: ["visit"],
 	description: 'Visit a friends house for candy. Results in them giving you some of their candy',
 	cooldown: 150,
+	validate(message, args) {
+		if(!/^<@!?\d+>$/.test(args[0])) {
+			message.channel.send(`Hmm, the bot can't find ${args[0]}'s address...`);
+			return false;
+		}
+		return true;
+	},
 	execute(message, args) {
 		let rand = Math.random();
 
-		if(!/^<@!?\d+>$/.test(args[0])) return message.channel.send(`Hmm, the bot can't find ${args[0]}'s address...`);
 		if(rand < 0.20) return message.channel.send(`You got lost on your way to ${args[0]}'s house...`);
 
 		let userToTrick = badDatabase.get(args[0].match(/(?<=^<@!?)\d+(?=>$)/)[0]);
