@@ -12,6 +12,11 @@ for(let key in data.users) {
 		data.users[key].balance = 0;
 		console.log(data.users[key].balance);
 	}*/
+	/*if(data.users[key].balance == 0) {
+		console.log(`Delete empty balanced user: ${key}`);
+		console.log(data.users[key].balance);
+		delete data.users[key];
+	}*/
 }
 
 module.exports = {
