@@ -8,7 +8,7 @@ module.exports = {
 		let chance = Math.random();
 		let pun = "";
 		if(chance < 0.1) {
-			badDatabase.get(message.author.id).balance += 20;
+			badDatabase.get(message.author.id).balance += 15;
 			pun = "What instrument does a skeleton play? A trombone.";
 		} else if(chance < 0.25) {
 			pun = "Did you know getting kissed by a vampire is a pain in the neck?";

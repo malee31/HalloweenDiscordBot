@@ -14,7 +14,7 @@ module.exports = {
 		.setTitle("Top Trick o' Treaters")
 		.setDescription("It's a race to the top")
 		.setThumbnail(message.guild.iconURL({dynamic: true}))
-		.setImage("https://media1.tenor.com/images/cbe3dc34cec7df2df230e064fc173d39/tenor.gif")
+		// .setImage("https://media1.tenor.com/images/cbe3dc34cec7df2df230e064fc173d39/tenor.gif")
 		.setFooter('🕸️ Get to the top before Spooky Season ends 🕸️');
 
 		let previous;
