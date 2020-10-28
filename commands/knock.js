@@ -4,7 +4,7 @@ module.exports = {
 	name: 'knock',
 	aliases: ["visit"],
 	description: 'Visit a friends house for candy. Results in them giving you some of their candy',
-	cooldown: 600,
+	cooldown: 300,
 	execute(message, args) {
 		let rand = Math.random();
 

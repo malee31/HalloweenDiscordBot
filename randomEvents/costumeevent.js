@@ -2,9 +2,8 @@ const Discord = require("discord.js");
 const badDatabase = require("../parts/badDatabase.js");
 
 module.exports = {
-	name: 'testevent',
-	description: 'Let\'s find out if events are working right',
-	disabled: true,
+	name: 'costumeevent',
+	description: 'Everyone pick out your costume and enter the costume contest!',
 	// cooldown: 180,
 	execute(message) {
 		let randomEventEmbed = new Discord.MessageEmbed()
