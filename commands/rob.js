@@ -9,7 +9,7 @@ module.exports = {
 	randomEvent: true,
 	validate(message, args) {
 		if(!/^<@!?\d+>$/.test(args[0])) {
-			message.channel.send(`Hmm, the bot can't find your target, ${args[0]}...`);
+			message.channel.send(`Hmm, the bot can't find your target${args[0] ? ", " + args[0] : ""}...`);
 			return false;
 		}
 
@@ -43,6 +43,12 @@ module.exports = {
 		return true;
 	},
 	execute(message, args) {
+		if (message.author.id === args[0].match(/(?<=^<@!?)\d+(?=>$)/)[0]) {
+			let user = badDatabase.get(message.author.id);
+			user.balance -= Math.min(10, user.balance);
+			return message.channel.send(`You sneakily stole ${Math.min(10, user.balance)} candies from the bag next to you and ate them...\nWait... That was your bag...`);
+		}
+
 		let dbStealFrom = badDatabase.get(args[0].match(/(?<=^<@!?)\d+(?=>$)/)[0]);
 		let dbThief = badDatabase.get(message.author.id);
 

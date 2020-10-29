@@ -5,6 +5,7 @@ module.exports = {
 	aliases: ["visit"],
 	description: 'Visit a friends house for candy. Results in them giving you some of their candy',
 	cooldown: 180,
+	usage: "[@Username]",
 	randomEvent: true,
 	validate(message, args) {
 		if(!/^<@!?\d+>$/.test(args[0])) {
@@ -14,6 +15,12 @@ module.exports = {
 		return true;
 	},
 	execute(message, args) {
+		if (message.author.id === args[0].match(/(?<=^<@!?)\d+(?=>$)/)[0]) {
+			let user = badDatabase.get(message.author.id);
+			user.balance -= Math.min(15, user.balance);
+			return message.channel.send(`You knocked on your own door, annoying your mom who came to open it.\nYou slept in the yard that night, eating ${Math.min(15, user.balance)} candies from your bag in place of dinner`);
+		}
+
 		let rand = Math.random();
 
 		if(rand < 0.20) return message.channel.send(`You got lost on your way to ${args[0]}'s house...`);
