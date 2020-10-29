@@ -25,7 +25,7 @@ module.exports = {
 				completed.push(msg.author.id);
 
 				let mysticNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
-				if(msg.content.toLowerCase() === validResponses[0] || msg.content.toLowerCase() === validResponses[1]) {
+				if(msg.content.toLowerCase() === validResponses[0] || msg.content.toLowerCase() === validResponses[2]) {
 					let rand = Math.random();
 					if(rand < 0.5){
 						rand = Math.floor(rand * 16 + 5);
