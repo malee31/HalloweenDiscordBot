@@ -3,7 +3,7 @@ const badDatabase = require("../parts/badDatabase.js");
 module.exports = {
 	name: 'reset',
 	aliases: ["restart", "delete"],
-	description: 'Get rid of all your candy or all of your debt.\nCopy and paste usage exactly.\n`WARNING: Irreversible`',
+	description: 'Get rid of all your candy or all of your debt. Copy and paste usage exactly.\n`WARNING: Irreversible`',
 	usage: "all of my candy to zero (0)",
 	execute(message, args) {
 		if(args.join(" ") !== "all of my candy to zero (0)") return message.channel.send("Type *<prefix> reset all of my candy to zero (0)* to reset your balance to 0. This is irreversible");

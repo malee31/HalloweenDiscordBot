@@ -1,6 +1,6 @@
 module.exports = {
 	name: 'shutdown',
-	description: 'Shutdown the bot for maintenance',
+	description: 'Shutdown the bot for maintenance. Requires permission ADMINISTRATOR',
 	execute(message) {
 		console.log(`Shutdown requested by: ${message.author.username}#${message.author.discriminator}`);
 		if(!message.member.hasPermission("ADMINISTRATOR") && message.author.id !== process.env.owner) return message.reply("The night has refused your commands");
