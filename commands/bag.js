@@ -11,7 +11,7 @@ module.exports = {
 		.setDescription(`You have ${badDatabase.get(message.author.id).balance} candies in your Trick o' Treat bag`)
 		.setFooter("Trick o' Treat!");
 
-		if(!args[0]) bagEmbed.setImage("https://media1.tenor.com/images/38109369073474ad9da629afae0c06d2/tenor.gif");
+		if(args[0]) bagEmbed.setImage("https://media1.tenor.com/images/38109369073474ad9da629afae0c06d2/tenor.gif");
 
 		return message.channel.send(bagEmbed);
 	},

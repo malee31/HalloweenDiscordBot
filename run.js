@@ -84,7 +84,7 @@ client.on('message', async message => {
 
 		command.execute(message, args);
 
-		if(now > lastEvent + 1 && message.guild !== null) {
+		if(now > lastEvent + 1 && message.guild !== null && (typeof command.randomEvent == "boolean" && command.randomEvent)) {
 			randomEvent(message);
 			lastEvent = now;
 		}

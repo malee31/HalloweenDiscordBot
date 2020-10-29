@@ -5,7 +5,8 @@ module.exports = {
 	aliases: ["steal", "heist", "snatch"],
 	description: 'The ultimate betrayal. Take all the good candy from your friend without getting caught!\n`WARNING: You can lose up to how much you try to steal\nFines calculated with (Amount you failed to steal) * ((Your balance) / ((Target\'s balance) * 2)) and caps at the amount you tried to steal.`',
 	usage: '[@Username] [amount]',
-	cooldown: 600,
+	cooldown: 450,
+	randomEvent: true,
 	validate(message, args) {
 		if(!/^<@!?\d+>$/.test(args[0])) {
 			message.channel.send(`Hmm, the bot can't find your target, ${args[0]}...`);
@@ -34,10 +35,10 @@ module.exports = {
 			message.channel.send("They don't have that much to steal");
 			return false;
 		}
-		// if(dbThief.balance > 2 * dbStealFrom.balance) {
-		// 	message.channel.send("You'll lose more than you'll gain if you're caught.\nIt's not worth it");
-		// 	return false;
-		// }
+		if(dbThief.balance > 2 * dbStealFrom.balance) {
+			message.channel.send("You'll lose more than you'll gain if you're caught.\nIt's not worth it");
+			return false;
+		}
 		args[1] = stealAmount;
 		return true;
 	},

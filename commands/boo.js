@@ -5,6 +5,7 @@ module.exports = {
 	aliases: ['scare', 'shock', 'spook'],
 	description: 'Scare the neighborhood Trick o\' Treaters and take their candy',
 	cooldown: 15,
+	randomEvent: true,
 	cooldownMessage(message, cooldown) {
 		return message.channel.send(`All the kids have already been scared off. Now to wait...\nCooldown: ${cooldown}`);
 	},

@@ -8,9 +8,9 @@ module.exports = {
 	execute(message) {
 		let randomEventEmbed = new Discord.MessageEmbed()
 			.setTitle("Random Event!")
-			.setDescription('"Hey!" A mysterious fortune teller beckons you towards them\n"You poor innocent child, if you send the spirits an offering, they may do you a favor in return..."\nDo you dare approach her? (approach/run) [Cost: 15 candies]')
+			.setDescription('"Hey!" A mysterious fortune teller beckons you towards them\n"You poor innocent child, if you speak to the spirits, they may do you a favor in return..."\nDo you dare approach her? (approach/run)')
 			.setColor('#B13DFF')
-			.setImage("https://cdn.discordapp.com/attachments/768224531126026295/769704291228581888/giphy.gif")
+			.setImage("https://cdn.discordapp.com/attachments/768224531126026295/769704291228581888/giphy.gif");
 
 		return message.channel.send(randomEventEmbed).then(sentMsg => {
 			let validResponses = ["approach", "run"];
@@ -29,8 +29,8 @@ module.exports = {
 				if(msg.content.toLowerCase() === "approach") {
 					let rand = Math.random();
 					if(rand < 0.5){
-						rand = Math.floor(rand * 21 + 10);
-						badDatabase.get(msg.author.id).balance += rand - 15;
+						rand = Math.floor(rand * 16 + 5);
+						badDatabase.get(msg.author.id).balance += rand;
 						footerText += `\n🔮 The fortune teller vanishes, leaving ${rand} candies behind for ${msg.author.username}#${msg.author.discriminator}`;
 					} else {
 						badDatabase.get(msg.author.id).balance -= 15;
