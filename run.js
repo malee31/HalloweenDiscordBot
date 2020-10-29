@@ -8,11 +8,18 @@ const cmdParse = require("./parts/commandParse.js");
 const {randomEvent} = require("./parts/randomEvent.js");
 
 client.commands = new Discord.Collection();
+client.devcommands = new Discord.Collection();
 const commandFiles = fs.readdirSync(`${__dirname}/commands`).filter(file => file.endsWith('.js'));
+const devcommandFiles = fs.readdirSync(`${__dirname}/devcommands`).filter(file => file.endsWith('.js'));
 
 for(const file of commandFiles) {
 	const command = require(`${__dirname}/commands/${file}`);
 	client.commands.set(command.name, command);
+}
+
+for(const file of devcommandFiles) {
+	const devcommand = require(`${__dirname}/devcommands/${file}`);
+	client.devcommands.set(devcommand.name, devcommand);
 }
 
 const cooldowns = new Discord.Collection();
@@ -28,8 +35,13 @@ client.on('message', async message => {
 	if(message.author.bot || !message.content.startsWith(process.env.testprefix || config.prefix)) return;
 
 	let {command, args} = cmdParse(message.content);
+	let commandTest2 = command;
 	command = client.commands.get(command) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command));
-	if(!command) return;
+	if(!command) {
+		if(!message.member.hasPermission("ADMINISTRATOR") && message.author.id !== process.env.owner) return;
+		command = client.devcommands.get(commandTest2) || client.devcommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandTest2))
+		if(!command) return;
+	}
 
 	if(command.guildOnly && message.channel.type === 'dm') {
 		return message.reply('I can\'t execute that command inside DMs!');
