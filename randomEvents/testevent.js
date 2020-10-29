@@ -5,11 +5,10 @@ module.exports = {
 	name: 'testevent',
 	description: 'Let\'s find out if events are working right',
 	disabled: true,
-	// cooldown: 180,
 	execute(message) {
 		let randomEventEmbed = new Discord.MessageEmbed()
-			.setTitle("Random Event!")
-			.setDescription("👻🧙Costume Party🧛🧟\nPick out *ONE* costume to wear to the party!")
+			.setTitle("👻🧙Costume Party🧛🧟")
+			.setDescription("Pick out *ONE* costume to wear to the party!")
 			.setColor('#E36024')
 			.setImage("https://media1.tenor.com/images/0c2be1c446b8c50323e7dbf7d934f56e/tenor.gif");
 

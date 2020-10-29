@@ -4,7 +4,6 @@ const badDatabase = require("../parts/badDatabase.js");
 module.exports = {
 	name: 'costumeevent',
 	description: 'Everyone pick out your costume and enter the costume contest!',
-	// cooldown: 180,
 	execute(message) {
 		let randomEventEmbed = new Discord.MessageEmbed()
 			.setTitle("Random Event!")
@@ -53,12 +52,12 @@ module.exports = {
 				else bestCostume = Array.from(bestCostume.users.cache.filter(user => !user.bot).keys());
 
 				for(let winner of bestCostume) {
-					badDatabase.get(winner).balance += 15;
+					badDatabase.get(winner).balance += 25;
 				}
 
 				let reactionNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
 				reactionNewEmbed
-					.setDescription(`The ${emoji} have won the costume contest! +15 candies`)
+					.setDescription(`The ${emoji} have won the costume contest! +25 candies`)
 					.setImage(null);
 
 				return sentMsg.edit(reactionNewEmbed);

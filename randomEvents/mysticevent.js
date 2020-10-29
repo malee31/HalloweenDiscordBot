@@ -4,16 +4,15 @@ const badDatabase = require("../parts/badDatabase");
 module.exports = {
 	name: 'mysticevent',
 	description: 'A mysterious fortune teller beckons you towards them. Offer the spirits a sacrifice and they may give you something back...',
-	// cooldown: 180,
 	execute(message) {
 		let randomEventEmbed = new Discord.MessageEmbed()
-			.setTitle("Random Event!")
-			.setDescription('"Hey!" A mysterious fortune teller beckons you towards them\n"You poor innocent child, if you speak to the spirits, they may do you a favor in return..."\nDo you dare approach her? (approach/run)')
-			.setColor('#B13DFF')
-			.setImage("https://cdn.discordapp.com/attachments/768224531126026295/769704291228581888/giphy.gif");
+			.setTitle("🔮 A Mystical Corner 🔮")
+			.setDescription('A mysterious fortune teller beckons you towards them\n"Offer yourself to the spirits"\n"They may bless you with something in return..."\nDo you dare approach her? (approach/run)')
+			.setColor('#8428BE')
+			.setImage("https://media1.tenor.com/images/927fdc64e22ebdfcc4c2fd5e73119604/tenor.gif");
 
 		return message.channel.send(randomEventEmbed).then(sentMsg => {
-			let validResponses = ["approach", "run"];
+			let validResponses = ["approach", "run", "yes", "no"];
 			let completed = [];
 			let footerText = "";
 
@@ -26,7 +25,7 @@ module.exports = {
 				completed.push(msg.author.id);
 
 				let mysticNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
-				if(msg.content.toLowerCase() === "approach") {
+				if(msg.content.toLowerCase() === validResponses[0] || msg.content.toLowerCase() === validResponses[1]) {
 					let rand = Math.random();
 					if(rand < 0.5){
 						rand = Math.floor(rand * 16 + 5);
@@ -37,9 +36,17 @@ module.exports = {
 						footerText += `\nThe fortune teller laughs and quickly vanishes, leaving ${msg.author.username}#${msg.author.discriminator} 15 candies poorer`;
 					}
 				} else {
-					footerText += `\n${msg.author.username}#${msg.author.discriminator} ran away safetly!`;
+					footerText += `\n${msg.author.username}#${msg.author.discriminator} ran away!`;
 				}
 				mysticNewEmbed.setFooter(footerText);
+				sentMsg.edit(mysticNewEmbed);
+			});
+
+			messageCollector.on("end", () => {
+				let mysticNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
+				mysticNewEmbed
+					.setDescription("The spirits have vanished from the streets")
+					.setImage(null);
 				sentMsg.edit(mysticNewEmbed);
 			});
 		}).catch(console.error);

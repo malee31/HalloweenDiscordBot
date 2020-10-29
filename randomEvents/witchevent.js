@@ -4,10 +4,9 @@ const badDatabase = require("../parts/badDatabase");
 module.exports = {
 	name: 'witchevent',
 	description: 'A witch is rumored to be passing out KING-SIZED candy bars! You aren\'t sure which witch it is... Do you dare to go visit one and try your luck?',
-	// cooldown: 180,
 	execute(message) {
 		let randomEventEmbed = new Discord.MessageEmbed()
-			.setTitle("Random Event!")
+			.setTitle("Which Witch")
 			.setDescription('There is a Witch in your neighborhood that is passing out KING SIZED candy bars.\nType \"treat\" to visit and \"trick\" to ignore.')
 			.setColor('#0EB533')
 			.setImage("https://media1.tenor.com/images/bed062b6c8a55f6aa375f944aecd7918/tenor.gif");
@@ -28,7 +27,7 @@ module.exports = {
 
 				let witchNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
 				if(msg.content.toLowerCase() === "treat") {
-					if(Math.random() < 0.5){
+					if(Math.random() < 0.6){
 						badDatabase.get(msg.author.id).balance += 15;
 						footerText += `\n${msg.author.username}#${msg.author.discriminator} receives a mega bar! That's like 15 normal candy bars!`;
 					} else {
@@ -39,6 +38,14 @@ module.exports = {
 					footerText += `\n${msg.author.username}#${msg.author.discriminator} was too scared to visit the witch. They're missing out`;
 				}
 				witchNewEmbed.setFooter(footerText);
+				sentMsg.edit(witchNewEmbed);
+			});
+
+			messageCollector.on("end", () => {
+				let witchNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
+				witchNewEmbed
+					.setDescription("It's too frightening a place to be on Halloween")
+					.setImage(null);
 				sentMsg.edit(witchNewEmbed);
 			});
 		}).catch(console.error);

@@ -4,7 +4,6 @@ const badDatabase = require("../parts/badDatabase");
 module.exports = {
 	name: 'reactevent',
 	description: 'Someone has dropped their candy! Quick, rush to pick it up for yourself!',
-	// cooldown: 10,
 	execute(message) {
 		let randomEventEmbed = new Discord.MessageEmbed()
 			.setTitle("Random Event!")
