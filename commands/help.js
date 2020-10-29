@@ -1,4 +1,5 @@
 const { prefix } = require('../parts/config.json');
+const timeFormat = require('../parts/timeFormat');
 
 module.exports = {
 	name: 'help',
@@ -13,7 +14,7 @@ module.exports = {
 			data.push('Here are all my commands:');
 			data.push(
 				commands.map(command => {
-					return `**${command.name}**: ${command.cooldown ? ` *[Cooldown: ${command.cooldown}s]*` : ""} ${command.description}`;
+					return `**${command.name}**: ${command.cooldown ? ` *[Cooldown: ${timeFormat(command.cooldown)}]*` : ""} ${command.description}`;
 				})
 				.join('\n')
 			);
@@ -33,10 +34,8 @@ module.exports = {
 
 		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
 		if (command.description) data.push(`**Description:** ${command.description}`);
-		if (command.cooldown) data.push(`**Cooldown:** ${command.cooldown}`);
+		if (command.cooldown) data.push(`**Cooldown:** ${timeFormat(command.cooldown)}`);
 		if (command.usage) data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
-
-		data.push(`**Cooldown:** ${command.cooldown || 3} second(s)`);
 
 		message.channel.send(data, { split: true });
 	},

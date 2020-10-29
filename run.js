@@ -3,6 +3,7 @@ const fs = require("fs");
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = require("./parts/config.json");
+const timeFormat = require('./parts/timeFormat.js');
 const cmdParse = require("./parts/commandParse.js");
 const {randomEvent} = require("./parts/randomEvent.js");
 
@@ -55,20 +56,7 @@ client.on('message', async message => {
 		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
 
 		if(now < expirationTime) {
-			let timeLeft = ((expirationTime - now) / 1000);
-			let units = "seconds";
-
-			if(timeLeft / 3600 >= 1) {
-				timeLeft = timeLeft / 3600;
-				units = timeLeft === 1 ? "hour" : "hours";
-			} else if (timeLeft / 60 >= 1) {
-				timeLeft = timeLeft / 60;
-				units = timeLeft === 1 ? "minute" : "minutes";
-			} else if(timeLeft === 1) {
-				units = "second";
-			}
-
-			timeLeft = `${timeLeft.toFixed(1)} ${units}`;
+			let timeLeft = timeFormat((expirationTime - now) / 1000);
 
 			if(typeof command.cooldownMessage == "function") return command.cooldownMessage(message, timeLeft);
 			return message.reply(`Please wait ${timeLeft} before reusing the \`${command.name}\` command.`);
@@ -90,7 +78,7 @@ client.on('message', async message => {
 		}
 	} catch (error) {
 		console.error(error);
-		message.reply('there was an error trying to execute that command!');
+		await message.reply('there was an error trying to execute that command!');
 	}
 });
 
@@ -102,4 +90,8 @@ client.once("disconnect", () => {
 	console.log("Disconnecting. Goodbye!");
 });
 
-client.login(process.env.discordtoken);
+client.login(process.env.discordtoken).catch(err => {
+	console.log("Could not login");
+	console.error(err);
+	process.exit(1);
+});
