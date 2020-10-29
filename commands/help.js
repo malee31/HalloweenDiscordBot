@@ -1,3 +1,4 @@
+const Discord = require("discord.js");
 const { prefix } = require('../parts/config.json');
 const timeFormat = require('../parts/timeFormat');
 
@@ -7,20 +8,20 @@ module.exports = {
 	aliases: ['commands'],
 	usage: '[command name]',
 	execute(message, args) {
-		const data = [];
 		const { commands } = message.client;
+		let helpEmbed = new Discord.MessageEmbed()
+			.setColor('#FF7518');
 
 		if (!args.length) {
-			data.push('Here are all my commands:');
-			data.push(
-				commands.map(command => {
-					return `**${command.name}**: ${command.cooldown ? ` *[Cooldown: ${timeFormat(command.cooldown)}]*` : ""} ${command.description}`;
-				})
-				.join('\n')
-			);
-			data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+			helpEmbed
+				.setTitle("Here are all my commands:")
+				.setFooter(`You can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
-			return message.channel.send(data, { split: true });
+			commands.forEach(command => {
+				helpEmbed.addField(`${command.name}${command.cooldown ? `  [Cooldown: ${timeFormat(command.cooldown)}]` : ""}`, `${command.description}`);
+			})
+
+			return message.channel.send(helpEmbed);
 		}
 
 		const name = args[0].toLowerCase();
@@ -30,13 +31,12 @@ module.exports = {
 			return message.reply('that\'s not a valid command!');
 		}
 
-		data.push(`**Name:** ${command.name}`);
+		helpEmbed.setTitle(`*${prefix} ${command.name}* ${command.cooldown ? `  [Cooldown: ${timeFormat(command.cooldown)}]` : ""}`);
 
-		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
-		if (command.description) data.push(`**Description:** ${command.description}`);
-		if (command.cooldown) data.push(`**Cooldown:** ${timeFormat(command.cooldown)}`);
-		if (command.usage) data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
+		if (command.description) helpEmbed.setDescription(command.description);
+		if (command.aliases) helpEmbed.addField("Aliases", command.aliases.join(', '));
+		if (command.usage) helpEmbed.addField("Usage", `${prefix}${command.name} ${command.usage}`);
 
-		message.channel.send(data, { split: true });
+		message.channel.send(helpEmbed);
 	},
 };
