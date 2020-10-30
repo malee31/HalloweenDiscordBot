@@ -2,6 +2,7 @@ require('dotenv').config();
 const fs = require("fs");
 const Discord = require("discord.js");
 const client = new Discord.Client();
+const eventEnd = require("./parts/eventEnd");
 const config = require("./parts/config.json");
 const timeFormat = require('./parts/timeFormat.js');
 const cmdParse = require("./parts/commandParse.js");
@@ -26,7 +27,13 @@ const cooldowns = new Discord.Collection();
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
-	client.user.setActivity("the SCREAMS of the Innocent", {type: "LISTENING"});
+	client.user.setActivity("the SCREAMS of the Innocent", {type: "LISTENING"})
+		.then(() => {
+			console.log("Successfully Set Activity");
+		}).catch(err => {
+			console.log("Failed to set own activity");
+			console.log(err);
+		});
 });
 
 let lastEvent = 0;
@@ -44,14 +51,14 @@ client.on('message', async message => {
 	}
 
 	if(command.guildOnly && message.channel.type === 'dm') {
-		return message.reply('I can\'t execute that command inside DMs!');
+		return message.channel.send('I can\'t execute that command inside DMs!');
 	}
 
 	if(command.args && !args.length) {
 		let reply = `You didn't provide any arguments, ${message.author}!`;
 
 		if(command.usage) {
-			reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+			reply += `\nThe proper usage would be: \`${config.prefix}${command.name} ${command.usage}\``;
 		}
 
 		return message.channel.send(reply);
@@ -63,6 +70,18 @@ client.on('message', async message => {
 	}
 	const timestamps = cooldowns.get(command.name);
 	const cooldownAmount = command.cooldown * 1000 || 0;
+
+	//Ends the event at the auto shut off time from config.json (Change it to 10/31/YYYY 23:59:59 in UTC Epoch Unix Time)
+	if(Math.floor(Date.now() / 1000) >= config.autoshutoff) {
+		try {
+			await eventEnd(message);
+
+		} catch (err) {
+			console.log("Failed to send 'Event Ended' message");
+			console.log(err);
+		}
+		return;
+	}
 
 	if(timestamps.has(message.author.id)) {
 		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
@@ -78,9 +97,11 @@ client.on('message', async message => {
 	try {
 		if(typeof command.validate === "function" && !command.validate(message, args)) return;
 
-		timestamps.set(message.author.id, now);
-		//TODO: See if there is a way to remove this timeout
-		setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+		if(cooldownAmount > 0) {
+			timestamps.set(message.author.id, now);
+			//TODO: See if there is a way to remove this timeout
+			setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+		}
 
 		command.execute(message, args);
 

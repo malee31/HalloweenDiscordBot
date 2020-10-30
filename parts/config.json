@@ -25,5 +25,6 @@
 	"eventTimerSpeed": 1000,
 	"eventBaseChance": 10,
 	"prefix": "-",
-	"substitutionPlaceholder": "substitutionplaceholder"
+	"substitutionPlaceholder": "substitutionplaceholder",
+	"autoshutoff": 1604188799
 }
