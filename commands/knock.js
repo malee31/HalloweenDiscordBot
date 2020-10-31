@@ -4,7 +4,7 @@ module.exports = {
 	name: 'knock',
 	aliases: ["visit"],
 	description: 'Visit a friends house for candy. Results in them giving you some of their candy',
-	cooldown: 180,
+	cooldown: 120,
 	usage: "[@Username]",
 	randomEvent: true,
 	validate(message, args) {

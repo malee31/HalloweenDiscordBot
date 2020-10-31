@@ -5,7 +5,7 @@ module.exports = {
 	aliases: ["steal", "heist", "snatch"],
 	description: 'The ultimate betrayal. Take all the good candy from your friend without getting caught!\n`WARNING: You can lose up to how much you try to steal\nFines calculated with (Amount you failed to steal) * ((Your balance) / ((Target\'s balance) * 2)) and caps at the amount you tried to steal.`',
 	usage: '[@Username] [amount]',
-	cooldown: 450,
+	cooldown: 300,
 	randomEvent: true,
 	validate(message, args) {
 		if(!/^<@!?\d+>$/.test(args[0])) {

@@ -27,7 +27,6 @@ module.exports = {
 			return allUsers[b.user.id].balance - allUsers[a.user.id].balance;
 		}).forEach(member => {
 			index++;
-			if(index < (page - 1) * 10 || index >= page * 10) return;
 			if(allUsers[member.user.id].balance === 0 || index < (page - 1) * 10 || index >= page * 10) return;
 			let marker = "🎃 ";
 			leaderboardEmbed.addField(`${marker}${allUsers[member.user.id].balance} Candies - ${member.user.username}#${member.user.discriminator}`, (typeof previous == "undefined" ? "The Ruler of Trick o' Treating!" : `${previous - allUsers[member.user.id].balance} Candies behind #${index}`));
