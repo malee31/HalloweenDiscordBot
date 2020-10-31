@@ -49,7 +49,7 @@ module.exports = {
 				knockMsg = `You knocked on ${args[0]}'s door but they weren't home so you stole their ENTIRE candy bucket. +${exchange} candies`;
 			} else {
 				exchange = userToTrick.balance > 700 ? 15 : 7;
-				knockMsg = `You knocked on ${args[0]}'s door but they weren't home so you grabbed ${exchange} pieces of candied in their take one candy bucket!`;
+				knockMsg = `You knocked on ${args[0]}'s door but they weren't home so you grabbed ${exchange} pieces of candy from their Take One bucket!`;
 			}
 		}
 

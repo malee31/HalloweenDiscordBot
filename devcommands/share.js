@@ -2,7 +2,7 @@ const badDatabase = require("../parts/badDatabase.js");
 
 module.exports = {
 	name: 'share',
-	aliases: ["give", "gift", "donate"],
+	aliases: ["give", "gift", "donate", "transfer"],
 	description: 'Give a friend some of your candy. A little bit is lost along the way (0-5%)',
 	usage: '<prefix>share <@Username> <amount>',
 	cooldown: 5,
@@ -24,6 +24,6 @@ module.exports = {
 		badDatabase.get(message.author.id).balance -= (exchange + loss);
 		badDatabase.get(giveTo).balance += exchange;
 
-		return message.channel.send(`${message.author.toString()} gave ${args[0]} ${exchange} candies after eating ${loss} of the ${args[1]} he took out of his bag!\nHow generous!`);
+		return message.channel.send(`${message.author.toString()} gave ${args[0]} ${exchange} candies after eating ${loss} of the ${args[1]} they took out of their bag!\nHow generous!`);
 	},
 };

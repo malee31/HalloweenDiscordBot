@@ -18,7 +18,7 @@ module.exports = {
 		.setFooter('🕸️ Get to the top before Spooky Season ends 🕸️');
 
 		let previous;
-		let index = 0;
+		let index = -1;
 		let page = Number.parseInt(args[0]);
 		if(isNaN(page) || page <= 0) page = 1;
 		message.guild.members.cache.filter(member => {
@@ -26,11 +26,12 @@ module.exports = {
 		}).sort((a, b) => {
 			return allUsers[b.user.id].balance - allUsers[a.user.id].balance;
 		}).forEach(member => {
-			if(allUsers[member.user.id].balance === 0 || index >= 10 * page || index < 10 * (page - 1)) return;
+			index++;
+			if(index < (page - 1) * 10 || index >= page * 10) return;
+			if(allUsers[member.user.id].balance === 0 || index < (page - 1) * 10 || index >= page * 10) return;
 			let marker = "🎃 ";
 			leaderboardEmbed.addField(`${marker}${allUsers[member.user.id].balance} Candies - ${member.user.username}#${member.user.discriminator}`, (typeof previous == "undefined" ? "The Ruler of Trick o' Treating!" : `${previous - allUsers[member.user.id].balance} Candies behind #${index}`));
 			previous = allUsers[member.user.id].balance;
-			index++;
 		});
 
 		return message.channel.send(leaderboardEmbed);
