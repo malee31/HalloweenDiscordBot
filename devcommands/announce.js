@@ -16,10 +16,10 @@ module.exports = {
 		}
 
 		let announcementEmbed = new Discord.MessageEmbed()
-			.setColor('#5185ED')
-			.setTitle("Spooky Season Sovereigns")
-			.setDescription("The Season Has Ended And The Victors Have Been Chosen")
-			.setFooter('❄ The Mist Settles And Clouds Begin To Gather ❄');
+		.setColor('#5185ED')
+		.setTitle("Spooky Season Sovereigns")
+		.setDescription("The Season Has Ended And The Victors Have Been Chosen")
+		.setFooter('❄ The Mist Settles And Clouds Begin To Gather ❄');
 
 		let previous;
 		let index = -1;
@@ -41,15 +41,15 @@ module.exports = {
 				case 1:
 					topText = "🥇 ";
 					bottomText += "The Crowned Victor";
-				break;
+					break;
 				case 2:
 					topText = "🥈 ";
 					bottomText += "Runner Up";
-				break;
+					break;
 				case 3:
 					topText = "🥉 ";
 					bottomText += "Third Place";
-				break;
+					break;
 				default:
 					topText = "🎃 ";
 					bottomText += `${previous - player.balance} Candies Behind #${index}`;

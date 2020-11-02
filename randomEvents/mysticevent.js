@@ -6,10 +6,10 @@ module.exports = {
 	description: 'A mysterious fortune teller beckons you towards them. Offer the spirits a sacrifice and they may give you something back...',
 	execute(message) {
 		let randomEventEmbed = new Discord.MessageEmbed()
-			.setTitle("🔮 A Mystical Corner 🔮")
-			.setDescription('A mysterious fortune teller beckons you towards them\n"Offer yourself to the spirits"\n"They may bless you with something in return..."\nDo you dare approach her? (approach/run)')
-			.setColor('#8428BE')
-			.setImage("https://media1.tenor.com/images/927fdc64e22ebdfcc4c2fd5e73119604/tenor.gif");
+		.setTitle("🔮 A Mystical Corner 🔮")
+		.setDescription('A mysterious fortune teller beckons you towards them\n"Offer yourself to the spirits"\n"They may bless you with something in return..."\nDo you dare approach her? (approach/run)')
+		.setColor('#8428BE')
+		.setImage("https://media1.tenor.com/images/927fdc64e22ebdfcc4c2fd5e73119604/tenor.gif");
 
 		return message.channel.send(randomEventEmbed).then(sentMsg => {
 			let validResponses = ["approach", "run", "yes", "no"];
@@ -27,7 +27,7 @@ module.exports = {
 				let mysticNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
 				if(msg.content.toLowerCase() === validResponses[0] || msg.content.toLowerCase() === validResponses[2]) {
 					let rand = Math.random();
-					if(rand < 0.5){
+					if(rand < 0.5) {
 						rand = Math.floor(rand * 16 + 5);
 						badDatabase.get(msg.author.id).balance += rand;
 						footerText += `\n🔮 The fortune teller vanishes, leaving ${rand} candies behind for ${msg.author.username}#${msg.author.discriminator}`;
@@ -45,8 +45,9 @@ module.exports = {
 			messageCollector.on("end", () => {
 				let mysticNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
 				mysticNewEmbed
-					.setDescription("The spirits have vanished from the streets")
-					.setImage(null);
+				.setDescription("The spirits have vanished from the streets")
+				.setImage(null);
+
 				sentMsg.edit(mysticNewEmbed);
 			});
 		}).catch(console.error);

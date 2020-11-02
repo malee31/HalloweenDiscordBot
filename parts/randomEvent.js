@@ -14,7 +14,7 @@ for(const file of randomEventFiles) {
 
 module.exports = {
 	randomEvent(message) {
-		if(Math.floor(Math.random() * 100 + 1)  < config.eventBaseChance) {
+		if(Math.floor(Math.random() * 100 + 1) < config.eventBaseChance) {
 			forceStartEvent(message);
 		}
 	},

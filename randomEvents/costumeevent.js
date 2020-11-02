@@ -6,10 +6,10 @@ module.exports = {
 	description: 'Everyone pick out your costume and enter the costume contest!',
 	execute(message) {
 		let randomEventEmbed = new Discord.MessageEmbed()
-			.setTitle("Random Event!")
-			.setDescription("👻🧙Costume Party🧛🧟\nPick out *ONE* costume to wear to the party!")
-			.setColor('#E36024')
-			.setImage("https://media1.tenor.com/images/0c2be1c446b8c50323e7dbf7d934f56e/tenor.gif");
+		.setTitle("Random Event!")
+		.setDescription("👻🧙Costume Party🧛🧟\nPick out *ONE* costume to wear to the party!")
+		.setColor('#E36024')
+		.setImage("https://media1.tenor.com/images/0c2be1c446b8c50323e7dbf7d934f56e/tenor.gif");
 
 		return message.channel.send(randomEventEmbed).then(sentMsg => {
 			let validEmojis = ["👻", '🧙', "🧛", "🧟"];
@@ -32,7 +32,7 @@ module.exports = {
 				if(collected.includes(user.id)) {
 					//May fail if bot doesn't have MANAGE_MESSAGES permission
 					if(sentMsg.guild.me.hasPermission("MANAGE_MESSAGES")) {
-						reaction.users.remove(user.id);
+						return reaction.users.remove(user.id);
 					}
 					return;
 				}
@@ -57,8 +57,8 @@ module.exports = {
 
 				let reactionNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
 				reactionNewEmbed
-					.setDescription(`The ${emoji} have won the costume contest! +25 candies`)
-					.setImage(null);
+				.setDescription(`The ${emoji} have won the costume contest! +25 candies`)
+				.setImage(null);
 
 				return sentMsg.edit(reactionNewEmbed);
 			})

@@ -28,12 +28,12 @@ const cooldowns = new Discord.Collection();
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
 	client.user.setActivity("the SCREAMS of the Innocent", {type: "LISTENING"})
-		.then(() => {
-			console.log("Successfully Set Activity");
-		}).catch(err => {
-			console.log("Failed to set own activity");
-			console.log(err);
-		});
+	.then(() => {
+		console.log("Successfully Set Activity");
+	}).catch(err => {
+		console.log("Failed to set own activity");
+		console.log(err);
+	});
 });
 
 let lastEvent = 0;
@@ -76,7 +76,7 @@ client.on('message', async message => {
 		try {
 			await eventEnd(message);
 
-		} catch (err) {
+		} catch(err) {
 			console.log("Failed to send 'Event Ended' message");
 			console.log(err);
 		}
@@ -109,7 +109,7 @@ client.on('message', async message => {
 			randomEvent(message);
 			lastEvent = now;
 		}
-	} catch (error) {
+	} catch(error) {
 		console.error(error);
 		await message.reply('there was an error trying to execute that command!');
 	}

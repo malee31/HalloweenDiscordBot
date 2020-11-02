@@ -6,10 +6,10 @@ module.exports = {
 	description: 'Someone has dropped their candy! Quick, rush to pick it up for yourself!',
 	execute(message) {
 		let randomEventEmbed = new Discord.MessageEmbed()
-			.setTitle("🍬🍫 Sweet Streak 🍭🍬")
-			.setDescription("Someone has tripped and spilled their candy on the ground!\nRush to pick some up for yourself!")
-			.setColor('#F8FF38')
-			.setImage("https://media1.tenor.com/images/9e9cde402d3774bf59b4627219ed7c0c/tenor.gif");
+		.setTitle("🍬🍫 Sweet Streak 🍭🍬")
+		.setDescription("Someone has tripped and spilled their candy on the ground!\nRush to pick some up for yourself!")
+		.setColor('#F8FF38')
+		.setImage("https://media1.tenor.com/images/9e9cde402d3774bf59b4627219ed7c0c/tenor.gif");
 
 		return message.channel.send(randomEventEmbed).then(sentMsg => {
 			let validEmojis = ["🍬", "🍫", "🍭", "🍪"];
@@ -47,9 +47,9 @@ module.exports = {
 			reactCollector.on("end", () => {
 				let reactionNewEmbed = new Discord.MessageEmbed(sentMsg.embeds[0]);
 				reactionNewEmbed
-					.setDescription("The candy has all been picked up off the ground and into your bags")
-					.setImage(null)
-					.setFooter(footerText);
+				.setDescription("The candy has all been picked up off the ground and into your bags")
+				.setImage(null)
+				.setFooter(footerText);
 				return sentMsg.edit(reactionNewEmbed);
 			});
 		}).catch(console.error);

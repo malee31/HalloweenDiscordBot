@@ -21,7 +21,6 @@ for(let key in data.users) {
 
 module.exports = {
 	get: get,
-	save: save,
 	saveInterval: setInterval(save, 5000)
 }
 

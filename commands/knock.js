@@ -15,7 +15,7 @@ module.exports = {
 		return true;
 	},
 	execute(message, args) {
-		if (message.author.id === args[0].match(/(?<=^<@!?)\d+(?=>$)/)[0]) {
+		if(message.author.id === args[0].match(/(?<=^<@!?)\d+(?=>$)/)[0]) {
 			let user = badDatabase.get(message.author.id);
 			user.balance -= Math.min(15, user.balance);
 			return message.channel.send(`You knocked on your own door, annoying your mom who came to open it.\nYou slept in the yard that night, eating ${Math.min(15, user.balance)} candies from your bag in place of dinner`);
@@ -33,12 +33,12 @@ module.exports = {
 				exchange = 10;
 			} else if(userToTrick.balance > 300) {
 				exchange = 5;
-	    	} else {
+			} else {
 				exchange = 2;
 			}
 			knockMsg = `You knocked on ${args[0]}'s door and their mom made them give you ${exchange} pieces of candy`;
 		} else {
-	    	if(userToTrick.balance > 1000) {
+			if(userToTrick.balance > 1000) {
 				if(userToTrick.balance > 2000) {
 					exchange = 45;
 				} else if(userToTrick.balance > 1500) {

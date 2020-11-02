@@ -31,7 +31,7 @@ module.exports = {
 			message.channel.send("You can't steal more than what you have");
 			return false;
 		}
-		if(dbStealFrom.balance < stealAmount){
+		if(dbStealFrom.balance < stealAmount) {
 			message.channel.send("They don't have that much to steal");
 			return false;
 		}
@@ -43,7 +43,7 @@ module.exports = {
 		return true;
 	},
 	execute(message, args) {
-		if (message.author.id === args[0].match(/(?<=^<@!?)\d+(?=>$)/)[0]) {
+		if(message.author.id === args[0].match(/(?<=^<@!?)\d+(?=>$)/)[0]) {
 			let user = badDatabase.get(message.author.id);
 			user.balance -= Math.min(10, user.balance);
 			return message.channel.send(`You sneakily stole ${Math.min(10, user.balance)} candies from the bag next to you and ate them...\nWait... That was your bag...`);
