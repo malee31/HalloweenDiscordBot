@@ -1,30 +1,10 @@
 {
 	"dbSchema": {
-		"balance": 0,
-		"trick": 0,
-		"cooldowns": {
-			"pass": 0,
-			"boo": 0,
-			"treatotreat": 0
-		}
+		"balance": 0
 	},
-	"cooldowns": {
-		"pass": 75600,
-		"boo": 420,
-		"trickotreat": 3600
-	},
-	"eventDurations": {
-		"witch": 180,
-		"mystic": 180
-	},
-	"enabledEvents": [
-		"react",
-		"witch",
-		"mystic"
-	],
 	"eventTimerSpeed": 1000,
 	"eventBaseChance": 10,
 	"prefix": "-",
 	"substitutionPlaceholder": "substitutionplaceholder",
-	"autoshutoff": 1604188799
+	"autoshutoff": 2524611600
 }
